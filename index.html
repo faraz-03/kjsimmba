@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MBA Study Tracker</title>
+<style>
+  :root {
+    --bg: #f0f2f8;
+    --card: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --imc: #7c3aed;
+    --intl: #3b82f6;
+    --retail: #10b981;
+    --strategy: #f59e0b;
+    --done-bg: #d1fae5;
+    --done-text: #065f46;
+    --prog-bg: #fef3c7;
+    --prog-text: #92400e;
+    --none-bg: #f3f4f6;
+    --none-text: #6b7280;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  header {
+    background: #1e1e2e;
+    color: white;
+    padding: 24px 32px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  header h1 { font-size: 1.6rem; font-weight: 700; }
+  header p { font-size: 0.85rem; color: #9ca3af; margin-top: 4px; }
+  .overall-badge {
+    background: #2d2d44;
+    border-radius: 12px;
+    padding: 10px 20px;
+    text-align: center;
+    min-width: 140px;
+  }
+  .overall-badge .pct { font-size: 2rem; font-weight: 800; color: #a78bfa; }
+  .overall-badge .label { font-size: 0.75rem; color: #9ca3af; }
+
+  .main { max-width: 1100px; margin: 0 auto; padding: 28px 20px; }
+
+  /* Summary Cards */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 18px 20px;
+    border-top: 4px solid var(--c);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+  .card .c-title { font-size: 0.8rem; font-weight: 600; color: var(--c); text-transform: uppercase; letter-spacing: .05em; }
+  .card .c-count { font-size: 1.6rem; font-weight: 800; color: var(--text); margin: 6px 0 4px; }
+  .card .c-sub { font-size: 0.78rem; color: var(--muted); }
+  .card .bar-bg { height: 6px; background: var(--border); border-radius: 99px; margin-top: 12px; overflow: hidden; }
+  .card .bar-fg { height: 100%; background: var(--c); border-radius: 99px; transition: width .5s ease; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .tab {
+    padding: 8px 18px;
+    border-radius: 8px;
+    border: 2px solid var(--border);
+    background: var(--card);
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+    transition: all .15s;
+  }
+  .tab:hover { border-color: #d1d5db; color: var(--text); }
+  .tab.active { background: var(--c); border-color: var(--c); color: white; }
+
+  /* Topic table */
+  .subject-panel { display: none; }
+  .subject-panel.active { display: block; }
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .panel-header h2 { font-size: 1.2rem; font-weight: 700; color: var(--c); }
+  .panel-stats { font-size: 0.85rem; color: var(--muted); }
+  .panel-stats span { font-weight: 700; color: var(--c); }
+
+  .actions { display: flex; gap: 8px; }
+  .btn-all {
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--done-bg);
+    color: var(--done-text);
+    transition: opacity .15s;
+  }
+  .btn-all:hover { opacity: .8; }
+  .btn-reset { background: var(--none-bg); color: var(--none-text); }
+
+  table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+  thead th { background: #1e1e2e; color: white; padding: 12px 16px; text-align: left; font-size: 0.82rem; font-weight: 600; letter-spacing: .04em; }
+  thead th:first-child { width: 42px; text-align: center; }
+  thead th:nth-child(3) { width: 160px; }
+  thead th:nth-child(4) { width: 220px; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #fafbff; }
+  tbody td { padding: 12px 16px; font-size: 0.88rem; vertical-align: middle; }
+  tbody td:first-child { text-align: center; color: var(--muted); font-size: 0.8rem; font-weight: 600; }
+  tbody td.topic-name { font-weight: 500; }
+  tbody tr.done td.topic-name { text-decoration: line-through; color: var(--muted); }
+
+  /* Status selector */
+  select.status-sel {
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--none-bg);
+    color: var(--none-text);
+    outline: none;
+    transition: all .15s;
+    width: 140px;
+  }
+  select.status-sel.done { background: var(--done-bg); color: var(--done-text); border-color: #6ee7b7; }
+  select.status-sel.inprogress { background: var(--prog-bg); color: var(--prog-text); border-color: #fcd34d; }
+
+  /* Notes */
+  input.note-input {
+    width: 100%;
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    font-size: 0.82rem;
+    background: transparent;
+    color: var(--text);
+    outline: none;
+    transition: border .15s;
+  }
+  input.note-input:focus { border-color: #a5b4fc; }
+
+  /* Chart area */
+  .chart-section { margin-bottom: 32px; }
+  .chart-section h3 { font-size: 1rem; font-weight: 700; margin-bottom: 14px; color: var(--text); }
+  .chart-bars { display: flex; flex-direction: column; gap: 14px; background: var(--card); border-radius: 14px; padding: 20px 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+  .chart-row { display: flex; align-items: center; gap: 14px; }
+  .chart-label { width: 160px; font-size: 0.82rem; font-weight: 600; color: var(--text); flex-shrink: 0; }
+  .chart-track { flex: 1; height: 22px; background: var(--border); border-radius: 99px; overflow: hidden; position: relative; }
+  .chart-fill { height: 100%; border-radius: 99px; transition: width .6s ease; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; }
+  .chart-fill span { font-size: 0.7rem; font-weight: 700; color: white; white-space: nowrap; }
+  .chart-num { width: 70px; font-size: 0.82rem; color: var(--muted); text-align: right; flex-shrink: 0; }
+
+  footer { text-align: center; padding: 24px; color: var(--muted); font-size: 0.78rem; }
+
+  @media (max-width: 600px) {
+    header { padding: 16px; }
+    header h1 { font-size: 1.2rem; }
+    .main { padding: 16px 12px; }
+    table { font-size: 0.8rem; }
+    thead th:nth-child(4) { display: none; }
+    tbody td:nth-child(4) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>📚 MBA Marketing — Study Tracker</h1>
+    <p>Batch 2024–26 &nbsp;·&nbsp; Semester IV &nbsp;·&nbsp; Academic Year 2025–26</p>
+  </div>
+  <div class="overall-badge">
+    <div class="pct" id="overall-pct">0%</div>
+    <div class="label">Overall Progress</div>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- Summary Cards -->
+  <div class="cards" id="cards"></div>
+
+  <!-- Bar Chart -->
+  <div class="chart-section">
+    <h3>📊 Progress by Subject</h3>
+    <div class="chart-bars" id="chart"></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs" id="tabs"></div>
+
+  <!-- Subject panels -->
+  <div id="panels"></div>
+
+</div>
+
+<footer>Progress is saved in your browser automatically &nbsp;·&nbsp; Made for KJ Somaiya MBA Marketing 2024–26</footer>
+
+<script>
+const SUBJECTS = {
+  "IMC": {
+    color: "#7c3aed",
+    topics: [
+      "Intro to IMC, components and fundamental concepts and tools",
+      "Elements of the Promotional Mix & Role of IMC in Marketing",
+      "Advertising Management: Communication Process, Response Models, FCB Model, Social Consumer Response Journey",
+      "Advertising Campaign Development: Message Strategy, Source and Channel factors",
+      "Advertising Creativity, DAGMAR, Creative Appreciation and Evaluation Workshop, Advertising Organization",
+      "Brand Pyramid, Keller's Brand Resonance Model, Kapferer's Brand Identity Prism",
+      "Development of Creative Brief, Consumer Insight, Copy Testing and Measurement, Y&R Model",
+      "Sales Promotion — planning and evaluation",
+      "PR and Publicity — PR campaign planning",
+      "New theories in New Media — Experiential Marketing, Buzz Marketing, Viral Campaigns, AR",
+      "Media Strategies, Media Planning and Media Mix Modelling"
+    ]
+  },
+  "International Marketing": {
+    color: "#3b82f6",
+    topics: [
+      "International Marketing — concept, need and scope",
+      "International Marketing Environment and dynamics including competitive and cultural dynamics",
+      "Trade Distortions and Market Barriers, WTO and its implications for International Marketing",
+      "Multinational Market Regions and Market Groups",
+      "Foreign Market Entry Strategies, Strategic Alliances and Global Market Opportunities",
+      "Product Planning and Development, Global Product Adaptation & Branding Strategies",
+      "Country of Origin Effect and Global Brands, International Product Strategies, IPLC",
+      "Pricing for International Markets, Countertrade, Export Procedure, Terms of Payment, Transfer Pricing",
+      "Global Logistics and Channels of Distribution"
+    ]
+  },
+  "Retail Marketing": {
+    color: "#10b981",
+    topics: [
+      "Introduction to Retailing, Retail Theories",
+      "Retail Formats and Classification, E-retailing",
+      "Retail Marketing Mix, KPIs in Retail (GMROI, DPP etc.), Visual Merchandising",
+      "Retail Strategy, Category Management",
+      "Retail Store Operations and SCM, Branding and Private Labels",
+      "Rural Retailing, Global Retailing",
+      "Introduction to Luxury Marketing, Luxury Retail Experience, Supply Chain and Sustainability in Luxury Retail"
+    ]
+  },
+  "Marketing Strategy": {
+    color: "#f59e0b",
+    topics: [
+      "Marketing Strategy Overview — STPD",
+      "Growth Strategies",
+      "Ansoff Matrix and its application to marketing strategies",
+      "Portfolio Analysis — BCG Matrix, GE Matrix, 7S Framework",
+      "Marketing Mix Strategies (4Ps)",
+      "Warfare Strategies — Defensive and Offensive",
+      "Competitor Analysis",
+      "Market Entry Strategies",
+      "Strategies for Mature/Declining Markets, Revival Strategies, Blue Ocean Strategy"
+    ]
+  }
+};
+
+const STATUS = { "Not Started": 0, "In Progress": 1, "Done": 2 };
+const STATUS_LABELS = ["Not Started", "In Progress", "Done"];
+
+// Load from localStorage
+function loadData() {
+  try { return JSON.parse(localStorage.getItem('mba_tracker') || '{}'); } catch { return {}; }
+}
+function saveData(data) {
+  localStorage.setItem('mba_tracker', JSON.stringify(data));
+}
+
+let data = loadData();
+
+function getSubjectProgress(subj) {
+  const topics = SUBJECTS[subj].topics;
+  const done = topics.filter((_, i) => (data[subj]?.[i]?.status || 'Not Started') === 'Done').length;
+  return { done, total: topics.length, pct: topics.length ? done / topics.length : 0 };
+}
+
+function getOverallProgress() {
+  let total = 0, done = 0;
+  for (const s of Object.keys(SUBJECTS)) {
+    const p = getSubjectProgress(s);
+    total += p.total; done += p.done;
+  }
+  return total ? Math.round(done / total * 100) : 0;
+}
+
+function updateAll() {
+  // Overall
+  document.getElementById('overall-pct').textContent = getOverallProgress() + '%';
+
+  // Cards
+  const cardsEl = document.getElementById('cards');
+  cardsEl.innerHTML = '';
+  for (const [name, info] of Object.entries(SUBJECTS)) {
+    const p = getSubjectProgress(name);
+    const pct = Math.round(p.pct * 100);
+    cardsEl.innerHTML += `
+      <div class="card" style="--c:${info.color}" onclick="switchTab('${name}')">
+        <div class="c-title">${name}</div>
+        <div class="c-count">${p.done} <span style="font-size:1rem;font-weight:400;color:var(--muted)">/ ${p.total}</span></div>
+        <div class="c-sub">Topics completed</div>
+        <div class="bar-bg"><div class="bar-fg" style="width:${pct}%"></div></div>
+      </div>`;
+  }
+
+  // Chart
+  const chartEl = document.getElementById('chart');
+  chartEl.innerHTML = '';
+  for (const [name, info] of Object.entries(SUBJECTS)) {
+    const p = getSubjectProgress(name);
+    const pct = Math.round(p.pct * 100);
+    chartEl.innerHTML += `
+      <div class="chart-row">
+        <div class="chart-label">${name}</div>
+        <div class="chart-track">
+          <div class="chart-fill" style="width:${pct}%;background:${info.color}">
+            ${pct > 10 ? `<span>${pct}%</span>` : ''}
+          </div>
+        </div>
+        <div class="chart-num">${p.done}/${p.total}</div>
+      </div>`;
+  }
+
+  // Update panel stats
+  for (const [name, info] of Object.entries(SUBJECTS)) {
+    const p = getSubjectProgress(name);
+    const el = document.getElementById(`stat-${name.replace(/\s+/g,'_')}`);
+    if (el) el.innerHTML = `<span>${p.done} / ${p.total}</span> topics done`;
+  }
+
+  // Row styling
+  for (const [name, info] of Object.entries(SUBJECTS)) {
+    SUBJECTS[name].topics.forEach((_, i) => {
+      const tr = document.getElementById(`row-${name.replace(/\s+/g,'_')}-${i}`);
+      const sel = document.getElementById(`sel-${name.replace(/\s+/g,'_')}-${i}`);
+      if (!tr || !sel) return;
+      const status = data[name]?.[i]?.status || 'Not Started';
+      tr.className = status === 'Done' ? 'done' : '';
+      sel.className = 'status-sel' + (status === 'Done' ? ' done' : status === 'In Progress' ? ' inprogress' : '');
+    });
+  }
+}
+
+function buildPanels() {
+  const tabsEl = document.getElementById('tabs');
+  const panelsEl = document.getElementById('panels');
+  let firstTab = true;
+
+  for (const [name, info] of Object.entries(SUBJECTS)) {
+    const key = name.replace(/\s+/g, '_');
+
+    // Tab
+    const tab = document.createElement('div');
+    tab.className = 'tab' + (firstTab ? ' active' : '');
+    tab.style.setProperty('--c', info.color);
+    tab.textContent = name;
+    tab.dataset.subject = name;
+    tab.onclick = () => switchTab(name);
+    tabsEl.appendChild(tab);
+
+    // Panel
+    let rows = '';
+    info.topics.forEach((topic, i) => {
+      const status = data[name]?.[i]?.status || 'Not Started';
+      const note = data[name]?.[i]?.note || '';
+      rows += `
+        <tr id="row-${key}-${i}" class="${status === 'Done' ? 'done' : ''}">
+          <td>${i + 1}</td>
+          <td class="topic-name">${topic}</td>
+          <td>
+            <select class="status-sel${status === 'Done' ? ' done' : status === 'In Progress' ? ' inprogress' : ''}"
+              id="sel-${key}-${i}"
+              onchange="updateStatus('${name}', ${i}, this.value)">
+              <option ${status==='Not Started'?'selected':''}>Not Started</option>
+              <option ${status==='In Progress'?'selected':''}>In Progress</option>
+              <option ${status==='Done'?'selected':''}>Done</option>
+            </select>
+          </td>
+          <td><input class="note-input" type="text" placeholder="Add a note..." value="${note.replace(/"/g,'&quot;')}"
+            oninput="updateNote('${name}', ${i}, this.value)" /></td>
+        </tr>`;
+    });
+
+    const panel = document.createElement('div');
+    panel.className = 'subject-panel' + (firstTab ? ' active' : '');
+    panel.id = `panel-${key}`;
+    panel.style.setProperty('--c', info.color);
+    panel.innerHTML = `
+      <div class="panel-header">
+        <div>
+          <h2>${name}</h2>
+          <div class="panel-stats" id="stat-${key}">0 / ${info.topics.length} topics done</div>
+        </div>
+        <div class="actions">
+          <button class="btn-all" onclick="markAll('${name}', 'Done')">✅ Mark All Done</button>
+          <button class="btn-all btn-reset" onclick="markAll('${name}', 'Not Started')">↩ Reset</button>
+        </div>
+      </div>
+      <table>
+        <thead><tr><th>#</th><th>Topic</th><th>Status</th><th>Notes</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+    panelsEl.appendChild(panel);
+    firstTab = false;
+  }
+}
+
+function switchTab(name) {
+  const key = name.replace(/\s+/g, '_');
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.subject === name);
+    const info = SUBJECTS[t.dataset.subject];
+    t.style.setProperty('--c', info.color);
+  });
+  document.querySelectorAll('.subject-panel').forEach(p => {
+    p.classList.toggle('active', p.id === `panel-${key}`);
+  });
+}
+
+function updateStatus(subj, idx, value) {
+  if (!data[subj]) data[subj] = {};
+  if (!data[subj][idx]) data[subj][idx] = {};
+  data[subj][idx].status = value;
+  saveData(data);
+  updateAll();
+}
+
+function updateNote(subj, idx, value) {
+  if (!data[subj]) data[subj] = {};
+  if (!data[subj][idx]) data[subj][idx] = {};
+  data[subj][idx].note = value;
+  saveData(data);
+}
+
+function markAll(subj, status) {
+  if (!data[subj]) data[subj] = {};
+  SUBJECTS[subj].topics.forEach((_, i) => {
+    if (!data[subj][i]) data[subj][i] = {};
+    data[subj][i].status = status;
+    const sel = document.getElementById(`sel-${subj.replace(/\s+/g,'_')}-${i}`);
+    if (sel) sel.value = status;
+  });
+  saveData(data);
+  updateAll();
+}
+
+buildPanels();
+updateAll();
+</script>
+</body>
+</html>
