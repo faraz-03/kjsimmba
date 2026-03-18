@@ -179,7 +179,7 @@ input.note-in:focus{border-color:var(--accent);}
 .lb-right{text-align:right;}
 .lb-pct{font-size:1.4rem;font-weight:700;color:var(--accent);}
 .lb-trophy{font-size:1.2rem;}
-.lb-quiz-badge{font-size:0.68rem;color:var(--muted);margin-top:2px;}
+
 .lb-bars{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;}
 .lb-sbar .lb-sname{font-size:0.68rem;color:var(--muted);margin-bottom:2px;}
 .lb-strack{height:4px;background:var(--card2);border-radius:99px;overflow:hidden;}
@@ -259,69 +259,6 @@ input.note-in:focus{border-color:var(--accent);}
 .fv-body{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;align-items:center;}
 .fv-body iframe{width:100%;max-width:900px;height:100%;min-height:80vh;border:none;border-radius:8px;background:#fff;}
 .fv-body img{max-width:100%;max-height:85vh;border-radius:8px;object-fit:contain;}
-
-/* ── QUIZ ── */
-.quiz-setup{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:14px;}
-.quiz-setup h3{font-size:1rem;font-weight:600;margin-bottom:4px;}
-.quiz-setup p{font-size:0.82rem;color:var(--muted);margin-bottom:16px;}
-.quiz-options-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
-.quiz-option-card{border:1.5px solid var(--border);border-radius:8px;padding:10px 12px;cursor:pointer;transition:all .15s;}
-.quiz-option-card:hover{border-color:var(--accent);}
-.quiz-option-card.selected{border-color:var(--accent);background:rgba(124,58,237,.06);}
-.quiz-option-card .qoc-label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
-.quiz-option-card .qoc-val{font-size:0.88rem;font-weight:600;}
-.quiz-start-btn{width:100%;padding:11px;border-radius:8px;border:none;background:var(--accent);color:white;font-size:0.9rem;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s;}
-.quiz-start-btn:hover{background:var(--accent2);}
-.quiz-start-btn:disabled{opacity:.5;cursor:not-allowed;}
-
-/* Active quiz */
-.quiz-active{display:none;}
-.quiz-active.show{display:block;}
-.quiz-progress-bar{height:4px;background:var(--card2);border-radius:99px;overflow:hidden;margin-bottom:16px;}
-.quiz-progress-fill{height:100%;background:var(--accent);border-radius:99px;transition:width .4s;}
-.quiz-meta{display:flex;justify-content:space-between;font-size:0.76rem;color:var(--muted);margin-bottom:14px;}
-.quiz-q-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:12px;}
-.quiz-q-subj{font-size:0.7rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
-.quiz-q-text{font-size:0.92rem;font-weight:500;line-height:1.5;}
-.quiz-options{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
-.quiz-opt{padding:11px 14px;border-radius:8px;border:1.5px solid var(--border);cursor:pointer;font-size:0.84rem;font-weight:500;transition:all .15s;background:var(--card);text-align:left;font-family:inherit;color:var(--text);}
-.quiz-opt:hover:not(:disabled){border-color:var(--accent);background:rgba(124,58,237,.04);}
-.quiz-opt.selected{border-color:var(--accent);background:rgba(124,58,237,.08);}
-.quiz-opt.correct{border-color:var(--green);background:var(--done-bg);color:var(--done-text);}
-.quiz-opt.wrong{border-color:var(--red);background:#fef2f2;color:#991b1b;}
-[data-theme="dark"] .quiz-opt.wrong{background:#450a0a;color:#fca5a5;}
-.quiz-explanation{background:var(--card2);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:12px 14px;font-size:0.82rem;line-height:1.5;margin-bottom:12px;display:none;}
-.quiz-explanation.show{display:block;}
-.quiz-next-btn{width:100%;padding:10px;border-radius:8px;border:none;background:var(--accent);color:white;font-size:0.88rem;font-weight:600;cursor:pointer;font-family:inherit;display:none;}
-.quiz-next-btn.show{display:block;}
-
-/* Quiz result */
-.quiz-result{display:none;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;text-align:center;}
-.quiz-result.show{display:block;}
-.qr-score{font-size:3rem;font-weight:800;color:var(--accent);line-height:1;}
-.qr-label{font-size:0.88rem;color:var(--muted);margin-top:4px;margin-bottom:20px;}
-.qr-breakdown{text-align:left;margin-bottom:20px;}
-.qr-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.82rem;}
-.qr-item:last-child{border-bottom:none;}
-.qr-correct{color:var(--green);font-weight:600;}
-.qr-wrong{color:var(--red);font-weight:600;}
-.qr-actions{display:flex;gap:8px;}
-.qr-btn{flex:1;padding:10px;border-radius:8px;border:1px solid var(--border);font-size:0.84rem;font-weight:600;cursor:pointer;background:none;color:var(--text);font-family:inherit;transition:all .15s;}
-.qr-btn.primary{background:var(--accent);color:white;border-color:var(--accent);}
-.qr-btn:hover{border-color:var(--accent);color:var(--accent);}
-.qr-btn.primary:hover{background:var(--accent2);}
-
-/* Quiz history */
-.quiz-history{margin-top:20px;}
-.qh-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
-.qh-left .qh-subj{font-size:0.84rem;font-weight:600;}
-.qh-left .qh-date{font-size:0.7rem;color:var(--muted);margin-top:2px;}
-.qh-score{font-size:1rem;font-weight:700;color:var(--accent);}
-
-/* Loading spinner */
-.quiz-loading{text-align:center;padding:30px;color:var(--muted);}
-.spinner{display:inline-block;width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;margin-bottom:8px;}
-@keyframes spin{to{transform:rotate(360deg);}}
 
 /* ── QUESTION BANK ── */
 .qbank-entry-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-top:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:border .15s;box-shadow:0 1px 3px var(--shadow);}
@@ -421,7 +358,7 @@ input.note-in:focus{border-color:var(--accent);}
 @media(max-width:480px){
   .exam-grid{grid-template-columns:repeat(2,1fr);}
   .stat-row{grid-template-columns:repeat(2,1fr);}
-  .quiz-options-grid{grid-template-columns:1fr;}
+  
   .lb-bars{grid-template-columns:1fr 1fr;}
 }
 </style>
@@ -647,51 +584,6 @@ input.note-in:focus{border-color:var(--accent);}
       <div id="qb-topics-list"><div class="no-content">No data yet</div></div>
     </div>
   </div>
-    <!-- Setup -->
-    <div class="quiz-setup" id="quiz-setup">
-      <h3>🧠 Quick Quiz</h3>
-      <p>AI-generated questions from your session plan. Different every time.</p>
-      <div style="font-size:0.76rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Subject</div>
-      <div class="quiz-options-grid" id="quiz-subj-opts"></div>
-      <div style="font-size:0.76rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:12px 0 8px;">Questions</div>
-      <div style="display:flex;gap:8px;margin-bottom:16px;" id="quiz-count-opts">
-        <button class="quiz-opt" style="flex:1;padding:10px;text-align:center;font-weight:600;" onclick="selectCount(5,this)">5</button>
-        <button class="quiz-opt" style="flex:1;padding:10px;text-align:center;font-weight:600;" onclick="selectCount(10,this)">10</button>
-        <button class="quiz-opt" style="flex:1;padding:10px;text-align:center;font-weight:600;" onclick="selectCount(15,this)">15</button>
-      </div>
-      <button class="quiz-start-btn" id="quiz-start-btn" onclick="startQuiz()" disabled>Generate Quiz</button>
-    </div>
-    <!-- Active quiz -->
-    <div class="quiz-active" id="quiz-active">
-      <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quiz-prog-fill"></div></div>
-      <div class="quiz-meta"><span id="quiz-q-num">Q 1 of 10</span><span id="quiz-score-live">Score: 0</span></div>
-      <div class="quiz-loading" id="quiz-loading" style="display:none">
-        <div class="spinner"></div>
-        <div>Generating question...</div>
-      </div>
-      <div id="quiz-q-wrap">
-        <div class="quiz-q-card">
-          <div class="quiz-q-subj" id="quiz-q-subj"></div>
-          <div class="quiz-q-text" id="quiz-q-text"></div>
-        </div>
-        <div class="quiz-options" id="quiz-opts"></div>
-        <div class="quiz-explanation" id="quiz-explanation"></div>
-        <button class="quiz-next-btn" id="quiz-next-btn" onclick="nextQuestion()">Next Question →</button>
-      </div>
-    </div>
-    <!-- Result -->
-    <div class="quiz-result" id="quiz-result">
-      <div class="qr-score" id="qr-score"></div>
-      <div class="qr-label" id="qr-label"></div>
-      <div class="qr-breakdown" id="qr-breakdown"></div>
-      <div class="qr-actions">
-        <button class="qr-btn" onclick="resetQuiz()">Try Again</button>
-        <button class="qr-btn primary" onclick="switchView('home',document.getElementById('bnav-home'))">Home</button>
-      </div>
-    </div>
-    <!-- History -->
-    <div class="quiz-history" id="quiz-history"></div>
-  </div>
 
 </div>
 
@@ -702,7 +594,6 @@ input.note-in:focus{border-color:var(--accent);}
   <button class="bnav-item" id="bnav-leaderboard" onclick="switchView('leaderboard',this)"><span class="bnav-icon">🏆</span>Squad</button>
   <button class="bnav-item" id="bnav-notes" onclick="switchView('notes',this)"><span class="bnav-icon">📝</span>Notes</button>
   <button class="bnav-item" id="bnav-files" onclick="switchView('files',this)"><span class="bnav-icon">📁</span>Files</button>
-  <button class="bnav-item" id="bnav-quiz" onclick="switchView('quiz',this)"><span class="bnav-icon">🧠</span>Quiz</button>
   <button class="bnav-item" id="bnav-papers" onclick="switchView('papers',this)"><span class="bnav-icon">📋</span>Papers</button>
 </div>
 
@@ -802,7 +693,7 @@ const SORTED_KEYS=SORTED_SUBJECTS.map(([k])=>k);
 
 let USERNAME='', ROOM_CODE='', myData={}, timers={};
 let noteTab='personal', noteSubj=SORTED_KEYS[0], noteDebounce=null;
-let quizSubj='', quizCount=10, quizQs=[], quizIdx=0, quizScore=0, quizAnswered=false;
+
 let fileFilter='All';
 
 const sl=(k,d)=>{try{return JSON.parse(localStorage.getItem(k)??'null')??d;}catch{return d;}};
@@ -830,7 +721,7 @@ window.startApp=()=>{
 
 // ── INIT ──
 function init(){
-  applyTheme();applyStreak();buildHome();buildTracker();buildNotepad();buildFileFilter();buildQuizSetup();
+  applyTheme();applyStreak();buildHome();buildTracker();buildNotepad();buildFileFilter();
   if(ROOM_CODE){syncToFB();listenLB();listenChat();listenPokes();setPresence();loadRoomMembers();listenPapers();listenQBQuestions();}
   listenAnnouncement();listenFiles();loadSwitchRooms();
 }
@@ -992,7 +883,7 @@ window.rstTimer=(s,i)=>{const k2=`${s}||${i}`,kk=key(s);if(timers[k2]){clearInte
 const rfTimer=(kk,i,t)=>{const d=document.getElementById(`tdisp-${kk}-${i}`),b=document.getElementById(`tbtn-${kk}-${i}`);if(d){d.textContent=fmt(t.elapsed);d.className='tdisp'+(t.running?' running':'');}if(b)b.textContent=t.running?'⏸':'▶';};
 
 // ── FIREBASE SYNC ──
-function syncToFB(){if(!USERNAME||!ROOM_CODE)return;const st=sl('mba_streak',{days:0,last:''});const today=new Date().toISOString().slice(0,10);const subjs={};for(const s of SORTED_KEYS)subjs[s]=getProg(s).pct;const qs=sl('mba_quiz_best',{});set(ref(db,`rooms/${ROOM_CODE}/users/${USERNAME}`),{name:USERNAME,overall:getOverall(),subjects:subjs,streak:st.days||0,studiedToday:st.last===today,lastSeen:Date.now(),quizBest:qs});}
+function syncToFB(){if(!USERNAME||!ROOM_CODE)return;const st=sl('mba_streak',{days:0,last:''});const today=new Date().toISOString().slice(0,10);const subjs={};for(const s of SORTED_KEYS)subjs[s]=getProg(s).pct;set(ref(db,`rooms/${ROOM_CODE}/users/${USERNAME}`),{name:USERNAME,overall:getOverall(),subjects:subjs,streak:st.days||0,studiedToday:st.last===today,lastSeen:Date.now()});}
 function setPresence(){if(!USERNAME||!ROOM_CODE)return;const r=ref(db,`rooms/${ROOM_CODE}/users/${USERNAME}/lastSeen`);set(r,Date.now());setInterval(()=>set(r,Date.now()),30000);}
 
 // ── LEADERBOARD ──
@@ -1004,12 +895,11 @@ function renderLB(users){
   document.getElementById('lb-grid').innerHTML=sorted.map(([uname,u],i)=>{
     const isMe=uname===USERNAME,av=AV_COLORS[Math.abs(hash(uname))%AV_COLORS.length],init2=uname.slice(0,2).toUpperCase();
     const sbars=SORTED_SUBJECTS.map(([s,info])=>`<div class="lb-sbar"><div class="lb-sname">${s.split(' ')[0]}</div><div class="lb-strack"><div class="lb-sfill" style="width:${u.subjects?.[s]||0}%;background:${info.color}"></div></div></div>`).join('');
-    const qb=u.quizBest?Object.entries(u.quizBest).map(([s,sc])=>`${s.split(' ')[0]}:${sc}%`).join(' · '):'';
     const btns=isMe?`<span style="font-size:0.72rem;color:var(--muted)">You 👋</span>`:`<button class="lb-btn poke" onclick="sendPoke('${uname}')">👉 Poke</button><button class="lb-btn together" onclick="sendInvite('${uname}')">🤝 Together</button>`;
     return`<div class="lb-card${rcs[i]?' '+rcs[i]:''}${isMe?' me':''}">
       <div class="lb-top"><div class="lb-user"><div class="lb-av" style="background:${av}">${init2}</div>
         <div><div class="lb-name">${uname}${isMe?' (you)':''}</div><div class="lb-meta">🔥${u.streak||0} · ${u.studiedToday?'✅ today':'💤 not today'}</div></div></div>
-        <div class="lb-right"><div class="lb-pct">${u.overall||0}%</div><div class="lb-trophy">${trophies[i]||''}</div>${qb?`<div class="lb-quiz-badge">🧠 ${qb}</div>`:''}</div>
+        <div class="lb-right"><div class="lb-pct">${u.overall||0}%</div><div class="lb-trophy">${trophies[i]||''}</div></div>
       </div>
       <div class="lb-bars">${sbars}</div>
       <div class="lb-btns">${btns}</div>
@@ -1070,112 +960,8 @@ window.openViewer=async fid=>{const snap=await get(ref(db,`rooms/${ROOM_CODE}/fi
 window.closeViewer=()=>{document.getElementById('fv-overlay').classList.remove('show');document.getElementById('fv-body').innerHTML='';};
 window.delFile=async fid=>{if(!confirm('Delete?'))return;await remove(ref(db,`rooms/${ROOM_CODE}/files/${fid}`));showToast('🗑️ Deleted');};
 
-// ── QUIZ ──
-function buildQuizSetup(){
-  document.getElementById('quiz-subj-opts').innerHTML=[...SORTED_KEYS,'All Subjects'].map(s=>`<div class="quiz-option-card" onclick="selectSubj('${s}',this)"><div class="qoc-label">Subject</div><div class="qoc-val">${s}</div></div>`).join('');
-}
-window.selectSubj=(s,el)=>{quizSubj=s;document.querySelectorAll('#quiz-subj-opts .quiz-option-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');checkQuizReady();};
-window.selectCount=(n,el)=>{quizCount=n;document.querySelectorAll('#quiz-count-opts .quiz-opt').forEach(b=>b.classList.remove('selected'));el.classList.add('selected');checkQuizReady();};
-function checkQuizReady(){document.getElementById('quiz-start-btn').disabled=!quizSubj;}
-
-window.startQuiz=async()=>{
-  if(!quizSubj)return;
-  document.getElementById('quiz-setup').style.display='none';
-  document.getElementById('quiz-active').classList.add('show');
-  document.getElementById('quiz-result').classList.remove('show');
-  quizQs=[];quizIdx=0;quizScore=0;quizAnswered=false;
-  document.getElementById('quiz-loading').style.display='block';
-  document.getElementById('quiz-q-wrap').style.display='none';
-  let topics=[];
-  if(quizSubj==='All Subjects'){for(const[s,info]of SORTED_SUBJECTS)info.topics.forEach(t=>topics.push({subj:s,topic:t}));}
-  else{SUBJECTS[quizSubj].topics.forEach(t=>topics.push({subj:quizSubj,topic:t}));}
-  topics.sort(()=>Math.random()-.5);
-  const selected=topics.slice(0,Math.min(quizCount,topics.length));
-  const topicList=selected.map((t,i)=>`${i+1}. [${t.subj}] ${t.topic}`).join('\n');
-  const ts=Date.now();
-  try {
-    const res=await fetch('https://claude-proxy.muhammed-f.workers.dev',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-5',
-        max_tokens:4000,
-        messages:[{role:'user',content:`You are a quiz generator for MBA Marketing students at KJ Somaiya Institute of Management. Generate exactly ${selected.length} MCQ questions based on these topics from the session plan:\n\n${topicList}\n\nTimestamp for uniqueness: ${ts}\n\nRules:\n- Each question must test understanding of the topic, not just recall the name\n- 4 options (A, B, C, D)\n- Only 1 correct answer\n- Keep wrong options plausible but clearly wrong\n- Explanation should be 1-2 sentences, educational\n- Questions should vary in difficulty\n- Make questions different from standard textbook definitions — focus on application\n\nRespond ONLY with valid JSON array, no markdown, no extra text:\n[\n  {\n    "subject": "subject name",\n    "question": "question text",\n    "options": ["A. ...", "B. ...", "C. ...", "D. ..."],\n    "correct": 0,\n    "explanation": "brief explanation"\n  }\n]`}]
-      })
-    });
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const data=await res.json();
-    if(data.error) throw new Error(data.error.message||'API error');
-    const txt=data.content[0].text.trim();
-    const clean=txt.replace(/```json|```/g,'').trim();
-    quizQs=JSON.parse(clean);
-    if(!Array.isArray(quizQs)||quizQs.length===0) throw new Error('No questions returned');
-  } catch(e) {
-    console.error('Quiz error:',e);
-    showToast('❌ Quiz failed: '+e.message,true);
-    document.getElementById('quiz-loading').style.display='none';
-    document.getElementById('quiz-active').classList.remove('show');
-    document.getElementById('quiz-setup').style.display='block';
-    return;
-  }
-  document.getElementById('quiz-loading').style.display='none';
-  document.getElementById('quiz-q-wrap').style.display='block';
-  showQuestion();
-};
-
-function showQuestion(){
-  if(quizIdx>=quizQs.length){finishQuiz();return;}
-  const q=quizQs[quizIdx];quizAnswered=false;
-  const pct=Math.round((quizIdx/quizQs.length)*100);
-  document.getElementById('quiz-prog-fill').style.width=pct+'%';
-  document.getElementById('quiz-q-num').textContent=`Q ${quizIdx+1} of ${quizQs.length}`;
-  document.getElementById('quiz-score-live').textContent=`Score: ${quizScore}`;
-  document.getElementById('quiz-q-subj').textContent=q.subject||quizSubj;
-  document.getElementById('quiz-q-text').textContent=q.question;
-  document.getElementById('quiz-explanation').className='quiz-explanation';
-  document.getElementById('quiz-next-btn').className='quiz-next-btn';
-  document.getElementById('quiz-opts').innerHTML=q.options.map((opt,i)=>`<button class="quiz-opt" onclick="answerQ(${i})">${opt}</button>`).join('');
-}
-
-window.answerQ=chosen=>{
-  if(quizAnswered)return;quizAnswered=true;
-  const q=quizQs[quizIdx];const correct=q.correct;const isRight=chosen===correct;
-  if(isRight)quizScore++;
-  document.querySelectorAll('.quiz-opt').forEach((btn,i)=>{
-    btn.disabled=true;
-    if(i===correct)btn.classList.add('correct');
-    else if(i===chosen&&!isRight)btn.classList.add('wrong');
-  });
-  document.getElementById('quiz-explanation').textContent=(isRight?'✅ Correct! ':'❌ Wrong. ')+q.explanation;
-  document.getElementById('quiz-explanation').classList.add('show');
-  document.getElementById('quiz-next-btn').textContent=quizIdx===quizQs.length-1?'See Results →':'Next Question →';
-  document.getElementById('quiz-next-btn').classList.add('show');
-};
-
-window.nextQuestion=()=>{quizIdx++;showQuestion();};
-
-function finishQuiz(){
-  document.getElementById('quiz-active').classList.remove('show');
-  const pct=Math.round(quizScore/quizQs.length*100);
-  const grade=pct>=80?'🎉 Excellent!':pct>=60?'👍 Good job!':pct>=40?'📖 Keep studying':'💪 More revision needed';
-  document.getElementById('qr-score').textContent=`${quizScore}/${quizQs.length}`;
-  document.getElementById('qr-label').textContent=`${pct}% · ${grade}`;
-  // Breakdown
-  const wrong=quizQs.filter((_,i)=>{const btn=document.querySelectorAll('.quiz-opt');return false;});
-  document.getElementById('qr-breakdown').innerHTML=`<div style="font-size:0.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Summary</div>`+quizQs.map((q,i)=>`<div class="qr-item"><span>${q.question.slice(0,50)}...</span><span class="${i<quizScore?'qr-correct':'qr-wrong'}">${i<quizScore?'✅':'❌'}</span></div>`).join('');
-  document.getElementById('quiz-result').classList.add('show');
-  // Save score
-  const best=sl('mba_quiz_best',{});const subjKey=quizSubj==='All Subjects'?'All':quizSubj;if(!best[subjKey]||pct>best[subjKey])best[subjKey]=pct;ss('mba_quiz_best',best);syncToFB();
-  // Save history
-  const hist=sl('mba_quiz_history',[]);hist.unshift({subj:quizSubj,score:pct,date:Date.now()});ss('mba_quiz_history',hist.slice(0,20));renderQuizHistory();
-}
-
-function renderQuizHistory(){const hist=sl('mba_quiz_history',[]);const el=document.getElementById('quiz-history');if(!hist.length){el.innerHTML='';return;}el.innerHTML=`<div class="section-heading">Quiz History</div>`+hist.slice(0,8).map(h=>`<div class="qh-item"><div class="qh-left"><div class="qh-subj">${h.subj}</div><div class="qh-date">${new Date(h.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div></div><div class="qh-score">${h.score}%</div></div>`).join('');}
-
-window.resetQuiz=()=>{quizQs=[];quizIdx=0;quizScore=0;document.getElementById('quiz-setup').style.display='block';document.getElementById('quiz-active').classList.remove('show');document.getElementById('quiz-result').classList.remove('show');renderQuizHistory();};
-
 // ── NAV ──
-window.switchView=(v,btn)=>{document.querySelectorAll('.app-view').forEach(el=>el.classList.toggle('active',el.id==='view-'+v));document.querySelectorAll('.bnav-item').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');else{const b=document.getElementById('bnav-'+v);if(b)b.classList.add('active');}if(v==='notes')loadNote();if(v==='files'&&ROOM_CODE)listenFiles();if(v==='quiz')renderQuizHistory();if(v==='papers'&&ROOM_CODE){listenPapers();listenQBQuestions();}};
+window.switchView=(v,btn)=>{document.querySelectorAll('.app-view').forEach(el=>el.classList.toggle('active',el.id==='view-'+v));document.querySelectorAll('.bnav-item').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');else{const b=document.getElementById('bnav-'+v);if(b)b.classList.add('active');}if(v==='notes')loadNote();if(v==='files'&&ROOM_CODE)listenFiles();if(v==='papers'&&ROOM_CODE){listenPapers();listenQBQuestions();}};
 
 // ── NOTIFICATIONS ──
 window.requestNotif=()=>{if(!('Notification' in window)){showToast('Not supported');return;}Notification.requestPermission().then(p=>{if(p==='granted'){showToast('🔔 Reminders on!');const last=sl('mba_last',0);if(Date.now()-last>20*3600000)new Notification('📚 Study time!',{body:'MBA exams are coming!'});}else showToast('Permission denied');ss('mba_last',Date.now());});};
