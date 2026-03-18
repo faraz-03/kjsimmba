@@ -64,13 +64,13 @@ header{height:var(--header-h);background:var(--card);border-bottom:1px solid var
 [data-theme="dark"] #ann-banner.success{background:#1c3a1c;color:#6ee7b7;}
 
 /* ── BOTTOM NAV ── */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:var(--nav-h);background:var(--card);border-top:1px solid var(--border);display:flex;z-index:50;}
-.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;border:none;background:none;color:var(--muted);font-size:0.58rem;font-weight:600;letter-spacing:.02em;text-transform:uppercase;transition:color .15s;padding:6px 2px;}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);display:flex;z-index:50;padding-bottom:env(safe-area-inset-bottom,0px);}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;border:none;background:none;color:var(--muted);font-size:0.58rem;font-weight:600;letter-spacing:.02em;text-transform:uppercase;transition:color .15s;padding:8px 2px 6px;}
 .bnav-item.active{color:var(--accent);}
 .bnav-icon{font-size:1.15rem;line-height:1;}
 
 /* ── MAIN ── */
-.main{max-width:680px;margin:0 auto;padding:20px 16px calc(var(--nav-h) + 16px);}
+.main{max-width:680px;margin:0 auto;padding:20px 16px calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 16px);}
 
 /* ── ROOM CARD (Option B) ── */
 .room-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;box-shadow:0 1px 4px var(--shadow);}
@@ -323,9 +323,51 @@ input.note-in:focus{border-color:var(--accent);}
 .spinner{display:inline-block;width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;margin-bottom:8px;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
-/* ── TOAST ── */
-.toast{position:fixed;bottom:calc(var(--nav-h) + 10px);left:50%;transform:translateX(-50%) translateY(60px);background:var(--text);color:var(--bg);padding:9px 18px;border-radius:10px;font-size:0.82rem;font-weight:600;z-index:9999;transition:transform .3s;pointer-events:none;white-space:nowrap;}
+/* ── QUESTION BANK ── */
+.qbank-entry-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-top:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:border .15s;box-shadow:0 1px 3px var(--shadow);}
+.qbank-entry-card:hover{border-color:var(--accent);}
+.qbe-left{display:flex;align-items:center;gap:12px;}
+.qbe-icon{font-size:1.6rem;}
+.qbe-title{font-size:0.9rem;font-weight:600;}
+.qbe-sub{font-size:0.74rem;color:var(--muted);margin-top:2px;}
+.qbe-arrow{font-size:1.1rem;color:var(--muted);}
+.qb-upload-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;box-shadow:0 1px 3px var(--shadow);}
+.qb-upload-title{font-size:0.9rem;font-weight:600;margin-bottom:2px;}
+.qb-upload-sub{font-size:0.74rem;color:var(--muted);margin-bottom:12px;}
+.qb-input{width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--border);font-size:0.84rem;background:var(--input-bg);color:var(--text);outline:none;font-family:inherit;}
+.qb-input:focus{border-color:var(--accent);}
+.paper-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:8px;box-shadow:0 1px 3px var(--shadow);}
+.paper-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+.paper-title{font-size:0.9rem;font-weight:700;}
+.paper-meta{font-size:0.72rem;color:var(--muted);margin-top:2px;}
+.paper-badge{font-size:0.7rem;font-weight:700;padding:3px 9px;border-radius:99px;background:var(--done-bg);color:var(--done-text);}
+.paper-badge.processing{background:var(--prog-bg);color:var(--prog-text);}
+.paper-badge.error{background:#fef2f2;color:var(--red);}
+.paper-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+.paper-btn{padding:4px 12px;border-radius:7px;border:1px solid var(--border);background:none;color:var(--muted);font-size:0.74rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;}
+.paper-btn:hover{border-color:var(--accent);color:var(--accent);}
+.paper-btn.danger:hover{border-color:var(--red);color:var(--red);}
+.qb-question-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:8px;}
+.qb-q-text{font-size:0.84rem;font-weight:500;line-height:1.5;margin-bottom:6px;}
+.qb-q-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.qb-q-subj{font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:99px;color:white;}
+.qb-q-topic{font-size:0.72rem;color:var(--muted);}
+.qb-repeat-badge{font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:99px;}
+.qb-repeat-badge.r1{background:var(--none-bg);color:var(--muted);}
+.qb-repeat-badge.r2{background:var(--prog-bg);color:var(--prog-text);}
+.qb-repeat-badge.r3{background:#fef2f2;color:var(--red);}
+.qb-topic-row{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:8px;}
+.qb-topic-name{font-size:0.84rem;font-weight:600;margin-bottom:4px;}
+.qb-topic-bar{height:4px;background:var(--card2);border-radius:99px;overflow:hidden;margin:6px 0;}
+.qb-topic-fill{height:100%;border-radius:99px;background:var(--accent);}
+.qb-topic-meta{font-size:0.72rem;color:var(--muted);}
+.qb-filter-btn{padding:4px 12px;border-radius:99px;border:1px solid var(--border);background:none;color:var(--muted);font-size:0.74rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;}
+.qb-filter-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(124,58,237,.07);}
+.toast{position:fixed;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 10px);left:50%;transform:translateX(-50%) translateY(60px);background:var(--text);color:var(--bg);padding:9px 14px 9px 18px;border-radius:10px;font-size:0.82rem;font-weight:600;z-index:9999;transition:transform .3s;pointer-events:auto;white-space:nowrap;display:flex;align-items:center;gap:10px;}
 .toast.show{transform:translateX(-50%) translateY(0);}
+.toast.error{background:#dc2626;color:white;}
+.toast-close{background:none;border:none;color:inherit;cursor:pointer;font-size:1rem;opacity:.7;padding:0;line-height:1;flex-shrink:0;}
+.toast-close:hover{opacity:1;}
 
 @media(max-width:480px){
   .exam-grid{grid-template-columns:repeat(2,1fr);}
@@ -409,6 +451,18 @@ input.note-in:focus{border-color:var(--accent);}
 
     <div class="section-heading">Subjects</div>
     <div id="subject-cards"></div>
+
+    <!-- Question Bank entry card -->
+    <div class="qbank-entry-card" onclick="switchView('papers',document.getElementById('bnav-papers'))">
+      <div class="qbe-left">
+        <div class="qbe-icon">📋</div>
+        <div>
+          <div class="qbe-title">Question Bank</div>
+          <div class="qbe-sub">Past papers · Repeat tracker · Topic analysis</div>
+        </div>
+      </div>
+      <div class="qbe-arrow">→</div>
+    </div>
   </div>
 
   <!-- TRACKER -->
@@ -477,8 +531,56 @@ input.note-in:focus{border-color:var(--accent);}
     <div id="file-list"><div class="no-content">No files yet</div></div>
   </div>
 
-  <!-- QUIZ -->
-  <div class="app-view" id="view-quiz">
+  <!-- PAPERS / QUESTION BANK -->
+  <div class="app-view" id="view-papers">
+    <!-- Upload -->
+    <div class="qb-upload-card">
+      <div class="qb-upload-header">
+        <div>
+          <div class="qb-upload-title">Upload Question Paper</div>
+          <div class="qb-upload-sub">PDF or image · Shared with your room · Duplicates auto-rejected</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+        <input class="qb-input" id="qb-year" placeholder="Year (e.g. 2023-24)"/>
+        <input class="qb-input" id="qb-exam" placeholder="Exam (e.g. End Term)"/>
+      </div>
+      <div class="upload-zone" id="qb-upload-zone" style="padding:16px;"
+        ondragover="event.preventDefault();this.classList.add('drag')"
+        ondragleave="this.classList.remove('drag')"
+        ondrop="handleQBDrop(event)" onclick="document.getElementById('qb-file-inp').click()">
+        <div class="uz-icon" style="font-size:1.4rem;">📎</div>
+        <div class="uz-title" style="font-size:0.84rem;">Tap to upload or drag & drop</div>
+        <div class="uz-sub">PDF or image · Max 10MB</div>
+        <input type="file" id="qb-file-inp" accept=".pdf,.jpg,.jpeg,.png" style="display:none"
+          onchange="uploadQBPaper(this.files[0])"/>
+      </div>
+      <div class="upload-prog" id="qb-upload-prog"><div class="upload-prog-fill" id="qb-upload-fill"></div></div>
+    </div>
+
+    <!-- View tabs -->
+    <div class="subj-tabs" id="qb-view-tabs" style="margin-top:16px;">
+      <button class="stab active" onclick="switchQBView('papers',this)">Papers</button>
+      <button class="stab" onclick="switchQBView('questions',this)">Questions</button>
+      <button class="stab" onclick="switchQBView('topics',this)">By Topic</button>
+    </div>
+
+    <!-- Papers list -->
+    <div id="qb-view-papers" style="padding-top:14px;">
+      <div id="qb-papers-list"><div class="no-content">No papers uploaded yet</div></div>
+    </div>
+
+    <!-- Questions list -->
+    <div id="qb-view-questions" style="display:none;padding-top:14px;">
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;" id="qb-subj-filter"></div>
+      <div id="qb-questions-list"><div class="no-content">No questions extracted yet</div></div>
+    </div>
+
+    <!-- By topic -->
+    <div id="qb-view-topics" style="display:none;padding-top:14px;">
+      <div id="qb-topics-list"><div class="no-content">No data yet</div></div>
+    </div>
+  </div>
     <!-- Setup -->
     <div class="quiz-setup" id="quiz-setup">
       <h3>🧠 Quick Quiz</h3>
@@ -531,10 +633,11 @@ input.note-in:focus{border-color:var(--accent);}
 <div class="bottom-nav">
   <button class="bnav-item active" id="bnav-home" onclick="switchView('home',this)"><span class="bnav-icon">🏠</span>Home</button>
   <button class="bnav-item" id="bnav-tracker" onclick="switchView('tracker',this)"><span class="bnav-icon">📖</span>Tracker</button>
-  <button class="bnav-item" id="bnav-leaderboard" onclick="switchView('leaderboard',this)"><span class="bnav-icon">🏆</span>Compete</button>
+  <button class="bnav-item" id="bnav-leaderboard" onclick="switchView('leaderboard',this)"><span class="bnav-icon">🏆</span>Squad</button>
   <button class="bnav-item" id="bnav-notes" onclick="switchView('notes',this)"><span class="bnav-icon">📝</span>Notes</button>
   <button class="bnav-item" id="bnav-files" onclick="switchView('files',this)"><span class="bnav-icon">📁</span>Files</button>
   <button class="bnav-item" id="bnav-quiz" onclick="switchView('quiz',this)"><span class="bnav-icon">🧠</span>Quiz</button>
+  <button class="bnav-item" id="bnav-papers" onclick="switchView('papers',this)"><span class="bnav-icon">📋</span>Papers</button>
 </div>
 
 <!-- FILE VIEWER -->
@@ -546,7 +649,7 @@ input.note-in:focus{border-color:var(--accent);}
   <div class="fv-body" id="fv-body"></div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast"><span id="toast-msg"></span><button class="toast-close" id="toast-close" onclick="hideToast()">✕</button></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -600,7 +703,7 @@ window.startApp=()=>{
 // ── INIT ──
 function init(){
   applyTheme();applyStreak();buildHome();buildTracker();buildNotepad();buildFileFilter();buildQuizSetup();
-  if(ROOM_CODE){syncToFB();listenLB();listenChat();listenPokes();setPresence();loadRoomMembers();}
+  if(ROOM_CODE){syncToFB();listenLB();listenChat();listenPokes();setPresence();loadRoomMembers();listenPapers();listenQBQuestions();}
   listenAnnouncement();listenFiles();loadSwitchRooms();
 }
 
@@ -691,7 +794,7 @@ window.joinRoom=code=>{
   ROOM_CODE=code;ss('mba_room',code);
   afterRoomJoin();
   document.getElementById('switch-room-panel').classList.remove('show');
-  syncToFB();listenLB();listenChat();listenPokes();setPresence();loadRoomMembers();
+  syncToFB();listenLB();listenChat();listenPokes();setPresence();loadRoomMembers();listenPapers();listenQBQuestions();
   showToast('✅ Joined room: '+code);
 };
 function afterRoomJoin(){
@@ -855,23 +958,37 @@ window.startQuiz=async()=>{
   quizQs=[];quizIdx=0;quizScore=0;quizAnswered=false;
   document.getElementById('quiz-loading').style.display='block';
   document.getElementById('quiz-q-wrap').style.display='none';
-  // Build topic list for prompt
   let topics=[];
   if(quizSubj==='All Subjects'){for(const[s,info]of Object.entries(SUBJECTS))info.topics.forEach(t=>topics.push({subj:s,topic:t}));}
   else{SUBJECTS[quizSubj].topics.forEach(t=>topics.push({subj:quizSubj,topic:t}));}
-  // Shuffle and pick
   topics.sort(()=>Math.random()-.5);
   const selected=topics.slice(0,Math.min(quizCount,topics.length));
   const topicList=selected.map((t,i)=>`${i+1}. [${t.subj}] ${t.topic}`).join('\n');
   const ts=Date.now();
   try {
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,messages:[{role:'user',content:`You are a quiz generator for MBA Marketing students. Generate exactly ${selected.length} MCQ questions based on these topics from the session plan:\n\n${topicList}\n\nTimestamp for uniqueness: ${ts}\n\nRules:\n- Each question must test understanding of the topic, not just recall the name\n- 4 options (A, B, C, D)\n- Only 1 correct answer\n- Keep wrong options plausible but clearly wrong\n- Explanation should be 1-2 sentences, educational\n- Questions should vary in difficulty\n\nRespond ONLY with valid JSON array, no markdown, no extra text:\n[\n  {\n    "subject": "subject name",\n    "question": "question text",\n    "options": ["A. ...", "B. ...", "C. ...", "D. ..."],\n    "correct": 0,\n    "explanation": "brief explanation"\n  }\n]`}]})});
+    const res=await fetch('https://claude-proxy.muhammed-f.workers.dev',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:4000,
+        messages:[{role:'user',content:`You are a quiz generator for MBA Marketing students at KJ Somaiya Institute of Management. Generate exactly ${selected.length} MCQ questions based on these topics from the session plan:\n\n${topicList}\n\nTimestamp for uniqueness: ${ts}\n\nRules:\n- Each question must test understanding of the topic, not just recall the name\n- 4 options (A, B, C, D)\n- Only 1 correct answer\n- Keep wrong options plausible but clearly wrong\n- Explanation should be 1-2 sentences, educational\n- Questions should vary in difficulty\n- Make questions different from standard textbook definitions — focus on application\n\nRespond ONLY with valid JSON array, no markdown, no extra text:\n[\n  {\n    "subject": "subject name",\n    "question": "question text",\n    "options": ["A. ...", "B. ...", "C. ...", "D. ..."],\n    "correct": 0,\n    "explanation": "brief explanation"\n  }\n]`}]
+      })
+    });
+    if(!res.ok) throw new Error('HTTP '+res.status);
     const data=await res.json();
+    if(data.error) throw new Error(data.error.message||'API error');
     const txt=data.content[0].text.trim();
-    quizQs=JSON.parse(txt);
+    const clean=txt.replace(/```json|```/g,'').trim();
+    quizQs=JSON.parse(clean);
+    if(!Array.isArray(quizQs)||quizQs.length===0) throw new Error('No questions returned');
   } catch(e) {
-    showToast('❌ Failed to generate quiz. Check connection.');
-    resetQuiz();return;
+    console.error('Quiz error:',e);
+    showToast('❌ Quiz failed: '+e.message,true);
+    document.getElementById('quiz-loading').style.display='none';
+    document.getElementById('quiz-active').classList.remove('show');
+    document.getElementById('quiz-setup').style.display='block';
+    return;
   }
   document.getElementById('quiz-loading').style.display='none';
   document.getElementById('quiz-q-wrap').style.display='block';
@@ -930,13 +1047,179 @@ function renderQuizHistory(){const hist=sl('mba_quiz_history',[]);const el=docum
 window.resetQuiz=()=>{quizQs=[];quizIdx=0;quizScore=0;document.getElementById('quiz-setup').style.display='block';document.getElementById('quiz-active').classList.remove('show');document.getElementById('quiz-result').classList.remove('show');renderQuizHistory();};
 
 // ── NAV ──
-window.switchView=(v,btn)=>{document.querySelectorAll('.app-view').forEach(el=>el.classList.toggle('active',el.id==='view-'+v));document.querySelectorAll('.bnav-item').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');else{const b=document.getElementById('bnav-'+v);if(b)b.classList.add('active');}if(v==='notes')loadNote();if(v==='files'&&ROOM_CODE)listenFiles();if(v==='quiz')renderQuizHistory();};
+window.switchView=(v,btn)=>{document.querySelectorAll('.app-view').forEach(el=>el.classList.toggle('active',el.id==='view-'+v));document.querySelectorAll('.bnav-item').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');else{const b=document.getElementById('bnav-'+v);if(b)b.classList.add('active');}if(v==='notes')loadNote();if(v==='files'&&ROOM_CODE)listenFiles();if(v==='quiz')renderQuizHistory();if(v==='papers'&&ROOM_CODE){listenPapers();listenQBQuestions();}};
 
 // ── NOTIFICATIONS ──
 window.requestNotif=()=>{if(!('Notification' in window)){showToast('Not supported');return;}Notification.requestPermission().then(p=>{if(p==='granted'){showToast('🔔 Reminders on!');const last=sl('mba_last',0);if(Date.now()-last>20*3600000)new Notification('📚 Study time!',{body:'MBA exams are coming!'});}else showToast('Permission denied');ss('mba_last',Date.now());});};
 
 // ── TOAST ──
-let toastT;window.showToast=msg=>{const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2600);};
+let toastT;
+window.hideToast=()=>{const t=document.getElementById('toast');t.classList.remove('show');};
+window.showToast=(msg,isError=false,duration=2600)=>{
+  const t=document.getElementById('toast'),m=document.getElementById('toast-msg');
+  m.textContent=msg;
+  t.className='toast'+(isError?' error':'');
+  t.classList.add('show');
+  clearTimeout(toastT);
+  if(!isError) toastT=setTimeout(()=>t.classList.remove('show'),duration);
+};
+
+// ── QUESTION BANK ──────────────────────────────────────────────────────────
+let qbSubjFilter='All', qbView='papers';
+
+async function sha256(str){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');}
+
+window.handleQBDrop=e=>{e.preventDefault();document.getElementById('qb-upload-zone').classList.remove('drag');const f=e.dataTransfer.files[0];if(f)uploadQBPaper(f);};
+
+window.uploadQBPaper=async file=>{
+  if(!file)return;
+  if(!ROOM_CODE){showToast('Join a room first',true);return;}
+  const year=document.getElementById('qb-year').value.trim();
+  const exam=document.getElementById('qb-exam').value.trim();
+  if(!year||!exam){showToast('Please enter year and exam name',true);return;}
+  if(file.size>10*1024*1024){showToast('❌ Max 10MB',true);return;}
+  const prog=document.getElementById('qb-upload-prog'),fill=document.getElementById('qb-upload-fill');
+  prog.style.display='block';fill.style.width='10%';
+  showToast('Reading paper...');
+  const reader=new FileReader();
+  reader.onload=async e=>{
+    const b64=e.target.result;
+    // Hash for duplicate detection
+    const fileHash=await sha256(b64.slice(0,5000)+file.size);
+    // Check for duplicate
+    const existing=await get(ref(db,`rooms/${ROOM_CODE}/papers`));
+    const papers=existing.val()||{};
+    const isDup=Object.values(papers).some(p=>p.hash===fileHash);
+    if(isDup){fill.style.width='0%';prog.style.display='none';showToast('⚠️ This paper was already uploaded',true);return;}
+    fill.style.width='30%';
+    // Save paper metadata
+    const paperId=await push(ref(db,`rooms/${ROOM_CODE}/papers`),{
+      name:file.name,year,exam,hash:fileHash,uploadedBy:USERNAME,
+      ts:Date.now(),status:'processing',questionCount:0
+    });
+    fill.style.width='50%';showToast('🧠 Extracting questions...');
+    // Extract questions via Claude
+    try{
+      const isImage=file.type.startsWith('image/');
+      const msgContent=isImage
+        ?[{type:'image',source:{type:'base64',media_type:file.type,data:b64.split(',')[1]}},{type:'text',text:buildExtractionPrompt(year,exam)}]
+        :[{type:'document',source:{type:'base64',media_type:'application/pdf',data:b64.split(',')[1]}},{type:'text',text:buildExtractionPrompt(year,exam)}];
+      const res=await fetch('https://claude-proxy.muhammed-f.workers.dev',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,messages:[{role:'user',content:msgContent}]})});
+      if(!res.ok)throw new Error('HTTP '+res.status);
+      const data=await res.json();
+      if(data.error)throw new Error(data.error.message||'API error');
+      const txt=data.content[0].text.trim();
+      const clean=txt.replace(/```json|```/g,'').trim();
+      const questions=JSON.parse(clean);
+      fill.style.width='80%';
+      // Save each question to Firebase
+      for(const q of questions){
+        await push(ref(db,`rooms/${ROOM_CODE}/questions`),{
+          text:q.question,subject:q.subject||'Unknown',topic:q.topic||'General',
+          paperId:paperId.key,year,exam,uploadedBy:USERNAME,ts:Date.now()
+        });
+      }
+      // Update paper status
+      await set(ref(db,`rooms/${ROOM_CODE}/papers/${paperId.key}/status`),'done');
+      await set(ref(db,`rooms/${ROOM_CODE}/papers/${paperId.key}/questionCount`),questions.length);
+      fill.style.width='100%';setTimeout(()=>{prog.style.display='none';fill.style.width='0%';},600);
+      showToast(`✅ Extracted ${questions.length} questions!`);
+      document.getElementById('qb-year').value='';document.getElementById('qb-exam').value='';
+    }catch(err){
+      await set(ref(db,`rooms/${ROOM_CODE}/papers/${paperId.key}/status`),'error');
+      fill.style.width='0%';prog.style.display='none';
+      showToast('❌ Extraction failed: '+err.message,true);
+    }
+  };
+  reader.readAsDataURL(file);
+};
+
+function buildExtractionPrompt(year,exam){
+  const allTopics=[];for(const[s,info]of Object.entries(SUBJECTS))info.topics.forEach(t=>allTopics.push(`[${s}] ${t}`));
+  return`You are analyzing an MBA Marketing exam paper from KJ Somaiya Institute of Management.\nYear: ${year}, Exam: ${exam}\n\nExtract ALL questions from this paper. For each question, map it to the most relevant topic from this list:\n${allTopics.join('\n')}\n\nRespond ONLY with valid JSON array, no markdown:\n[\n  {\n    "question": "full question text",\n    "subject": "subject name from the list",\n    "topic": "exact topic name from the list"\n  }\n]`;}
+
+function listenPapers(){
+  if(!ROOM_CODE)return;
+  onValue(ref(db,`rooms/${ROOM_CODE}/papers`),snap=>{renderPapers(snap.val()||{});});
+  onValue(ref(db,`rooms/${ROOM_CODE}/questions`),snap=>{renderQBQuestions(snap.val()||{});renderQBTopics(snap.val()||{});});
+}
+
+function renderPapers(papers){
+  const el=document.getElementById('qb-papers-list');
+  const entries=Object.entries(papers).sort((a,b)=>(b[1].ts||0)-(a[1].ts||0));
+  if(!entries.length){el.innerHTML='<div class="no-content">No papers yet — upload one above!</div>';return;}
+  el.innerHTML=entries.map(([pid,p])=>`
+    <div class="paper-card">
+      <div class="paper-card-header">
+        <div><div class="paper-title">${p.exam} — ${p.year}</div><div class="paper-meta">${p.name} · by ${p.uploadedBy} · ${p.ts?timeAgo(p.ts):''}</div></div>
+        <span class="paper-badge${p.status==='processing'?' processing':p.status==='error'?' error':''}">${p.status==='done'?`${p.questionCount||0} Qs`:p.status==='error'?'Error':'Processing...'}</span>
+      </div>
+      <div class="paper-actions">
+        ${p.uploadedBy===USERNAME?`<button class="paper-btn danger" onclick="deletePaper('${pid}')">Delete</button>`:''}
+      </div>
+    </div>`).join('');
+}
+
+function renderQBQuestions(questions){
+  const el=document.getElementById('qb-questions-list');
+  // Build repeat map
+  const repeatMap={};
+  Object.values(questions).forEach(q=>{const k=q.topic||'General';if(!repeatMap[k])repeatMap[k]=[];repeatMap[k].push(q);});
+  // Filter
+  let entries=Object.values(questions);
+  if(qbSubjFilter!=='All')entries=entries.filter(q=>q.subject===qbSubjFilter);
+  entries.sort((a,b)=>(repeatMap[b.topic]?.length||1)-(repeatMap[a.topic]?.length||1));
+  if(!entries.length){el.innerHTML='<div class="no-content">No questions yet</div>';return;}
+  el.innerHTML=entries.map(q=>{
+    const reps=repeatMap[q.topic]?.length||1;
+    const rc=reps>=3?'r3':reps>=2?'r2':'r1';
+    const sInfo=SUBJECTS[q.subject];
+    return`<div class="qb-question-item">
+      <div class="qb-q-text">${esc(q.question)}</div>
+      <div class="qb-q-meta">
+        <span class="qb-q-subj" style="background:${sInfo?.color||'#6b7280'}">${q.subject||'?'}</span>
+        <span class="qb-q-topic">${q.topic||'General'}</span>
+        <span class="qb-repeat-badge ${rc}">${reps}× asked</span>
+        <span style="font-size:0.68rem;color:var(--muted)">${q.year} ${q.exam}</span>
+      </div>
+    </div>`;
+  }).join('');
+  // Subject filter buttons
+  const filterEl=document.getElementById('qb-subj-filter');
+  const subjList=['All',...new Set(Object.values(questions).map(q=>q.subject).filter(Boolean))];
+  filterEl.innerHTML=subjList.map(s=>`<button class="qb-filter-btn${s===qbSubjFilter?' active':''}" onclick="setQBFilter('${s}')">${s.split(' ')[0]}</button>`).join('');
+}
+
+function renderQBTopics(questions){
+  const el=document.getElementById('qb-topics-list');
+  const topicMap={};
+  Object.values(questions).forEach(q=>{
+    const k=`${q.subject}||${q.topic}`;
+    if(!topicMap[k])topicMap[k]={subject:q.subject,topic:q.topic,count:0,years:new Set()};
+    topicMap[k].count++;topicMap[k].years.add(q.year);
+  });
+  const sorted=Object.values(topicMap).sort((a,b)=>b.count-a.count);
+  const max=sorted[0]?.count||1;
+  if(!sorted.length){el.innerHTML='<div class="no-content">No data yet</div>';return;}
+  el.innerHTML=sorted.map(t=>{
+    const sInfo=SUBJECTS[t.subject];
+    return`<div class="qb-topic-row">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div class="qb-topic-name">${t.topic}</div>
+        <span class="qb-repeat-badge ${t.count>=3?'r3':t.count>=2?'r2':'r1'}">${t.count}× asked</span>
+      </div>
+      <div class="qb-topic-bar"><div class="qb-topic-fill" style="width:${Math.round(t.count/max*100)}%;background:${sInfo?.color||'var(--accent)'}"></div></div>
+      <div class="qb-topic-meta">${t.subject} · Years: ${[...t.years].join(', ')}</div>
+    </div>`;
+  }).join('');
+}
+
+window.setQBFilter=s=>{qbSubjFilter=s;const snap=window._qbQuestions||{};renderQBQuestions(snap);};
+window.switchQBView=(v,btn)=>{qbView=v;document.querySelectorAll('#qb-view-tabs .stab').forEach(t=>t.classList.remove('active'));if(btn)btn.classList.add('active');['papers','questions','topics'].forEach(n=>{document.getElementById(`qb-view-${n}`).style.display=n===v?'block':'none';});};
+window.deletePaper=async pid=>{if(!confirm('Delete this paper and all its extracted questions?'))return;const snap=await get(ref(db,`rooms/${ROOM_CODE}/questions`));const qs=snap.val()||{};for(const[qid,q]of Object.entries(qs)){if(q.paperId===pid)await remove(ref(db,`rooms/${ROOM_CODE}/questions/${qid}`));}await remove(ref(db,`rooms/${ROOM_CODE}/papers/${pid}`));showToast('🗑️ Paper deleted');};
+
+// Cache questions for filter
+function listenQBQuestions(){onValue(ref(db,`rooms/${ROOM_CODE}/questions`),snap=>{window._qbQuestions=snap.val()||{};});}
 
 // ── AUTO LOGIN ──
 applyTheme();
