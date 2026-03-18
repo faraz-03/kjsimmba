@@ -796,9 +796,12 @@ const SUBJECTS = {
 };
 const POKES=["Still sleeping? I'm ahead already!","Caught slacking 😂 Better study!","Tick tock ⏰ Exams are near!","I can see you procrastinating 🔭","Last one done buys chai ☕","Friendly reminder: you exist 🙃","I'm ahead. Just saying 😏"];
 const AV_COLORS=["#7c3aed","#2563eb","#059669","#d97706","#dc2626","#db2777","#0891b2"];
+// Subjects sorted by exam date ascending — used everywhere
+const SORTED_SUBJECTS=Object.entries(SUBJECTS).sort((a,b)=>new Date(a[1].exam)-new Date(b[1].exam));
+const SORTED_KEYS=SORTED_SUBJECTS.map(([k])=>k);
 
 let USERNAME='', ROOM_CODE='', myData={}, timers={};
-let noteTab='personal', noteSubj=Object.keys(SUBJECTS)[0], noteDebounce=null;
+let noteTab='personal', noteSubj=SORTED_KEYS[0], noteDebounce=null;
 let quizSubj='', quizCount=10, quizQs=[], quizIdx=0, quizScore=0, quizAnswered=false;
 let fileFilter='All';
 
@@ -843,14 +846,14 @@ function applyStreak(){
 
 // ── PROGRESS ──
 function getProg(subj,d){const src=d||myData,topics=SUBJECTS[subj].topics,done=topics.filter((_,i)=>(src[subj]?.[i]?.status||'Not Started')==='Done').length;return{done,total:topics.length,pct:topics.length?Math.round(done/topics.length*100):0};}
-function getOverall(d){let t=0,dn=0;for(const s of Object.keys(SUBJECTS)){const p=getProg(s,d);t+=p.total;dn+=p.done;}return t?Math.round(dn/t*100):0;}
+function getOverall(d){let t=0,dn=0;for(const s of SORTED_KEYS){const p=getProg(s,d);t+=p.total;dn+=p.done;}return t?Math.round(dn/t*100):0;}
 
 // ── HOME ──
 function buildHome(){
   const overall=getOverall();document.getElementById('overall-val').textContent=overall+'%';
   // Exam grid
   const now=new Date();now.setHours(0,0,0,0);
-  document.getElementById('exam-grid').innerHTML=Object.entries(SUBJECTS).map(([n,info])=>{
+  document.getElementById('exam-grid').innerHTML=SORTED_SUBJECTS.map(([n,info])=>{
     const exam=new Date(info.exam);exam.setHours(0,0,0,0);
     const diff=Math.round((exam-now)/86400000);
     const dayTxt=diff<0?'✓':diff===0?'!':diff;
@@ -863,14 +866,14 @@ function buildHome(){
   }).join('');
   // Stats
   let total=0,done=0,inprog=0,high=0;
-  for(const[s,info]of Object.entries(SUBJECTS)){info.topics.forEach((_,i)=>{total++;const st=myData[s]?.[i]?.status||'';const p=myData[s]?.[i]?.priority||'';if(st==='Done')done++;if(st==='In Progress')inprog++;if(p==='High')high++;});}
+  for(const[s,info]of SORTED_SUBJECTS){info.topics.forEach((_,i)=>{total++;const st=myData[s]?.[i]?.status||'';const p=myData[s]?.[i]?.priority||'';if(st==='Done')done++;if(st==='In Progress')inprog++;if(p==='High')high++;});}
   document.getElementById('stat-row').innerHTML=`
     <div class="stat-box"><div class="stat-val" style="color:var(--accent)">${overall}%</div><div class="stat-lbl">Overall</div></div>
     <div class="stat-box"><div class="stat-val" style="color:var(--green)">${done}</div><div class="stat-lbl">Done</div></div>
     <div class="stat-box"><div class="stat-val" style="color:var(--orange)">${inprog}</div><div class="stat-lbl">Active</div></div>
     <div class="stat-box"><div class="stat-val" style="color:var(--red)">${total-done}</div><div class="stat-lbl">Left</div></div>`;
   // Subject cards
-  document.getElementById('subject-cards').innerHTML=Object.entries(SUBJECTS).map(([n,info])=>{
+  document.getElementById('subject-cards').innerHTML=SORTED_SUBJECTS.map(([n,info])=>{
     const p=getProg(n);const examStr=new Date(info.exam).toLocaleDateString('en-IN',{day:'numeric',month:'short'});
     return`<div class="subject-card" onclick="switchView('tracker',document.getElementById('bnav-tracker'));switchSubjTab('${n}')">
       <div class="sc-header"><div class="sc-name"><div class="sc-dot" style="background:${info.color}"></div>${n}</div><div class="sc-pct">${p.pct}%</div></div>
@@ -932,7 +935,7 @@ window.copyRoom=()=>{navigator.clipboard.writeText(ROOM_CODE).then(()=>showToast
 function buildTracker(){
   const tabsEl=document.getElementById('subj-tabs'),panelsEl=document.getElementById('subj-panels');
   tabsEl.innerHTML='';panelsEl.innerHTML='';let first=true;
-  for(const[name,info]of Object.entries(SUBJECTS)){
+  for(const[name,info]of SORTED_SUBJECTS){
     const k=key(name);
     const tab=document.createElement('button');
     tab.className='stab'+(first?' active':'');tab.textContent=name.split(' ')[0];tab.dataset.s=name;tab.onclick=()=>switchSubjTab(name);
@@ -974,7 +977,7 @@ function buildTracker(){
 }
 window.switchSubjTab=n=>{
   document.querySelectorAll('.stab').forEach(t=>t.classList.toggle('active',t.dataset.s===n));
-  for(const nm of Object.keys(SUBJECTS)){const p=document.getElementById(`spanel-${key(nm)}`);if(p)p.style.display=nm===n?'block':'none';}
+  for(const nm of SORTED_KEYS){const p=document.getElementById(`spanel-${key(nm)}`);if(p)p.style.display=nm===n?'block':'none';}
 };
 function ens(s,i){if(!myData[s])myData[s]={};if(!myData[s][i])myData[s][i]={};}
 window.updStat=(s,i,v)=>{ens(s,i);myData[s][i].status=v;if(v==='Done'){applyStreak();showToast('✅');}ss('mba_tracker',myData);const k2=key(s);const row=document.getElementById(`trow-${k2}-${i}`),sel=document.getElementById(`tsel-${k2}-${i}`);if(row)row.className='topic-row'+(v==='Done'?' done':'');if(sel)sel.className='t-sel'+(v==='Done'?' done':v==='In Progress'?' inprogress':'');buildHome();syncToFB();};
@@ -989,7 +992,7 @@ window.rstTimer=(s,i)=>{const k2=`${s}||${i}`,kk=key(s);if(timers[k2]){clearInte
 const rfTimer=(kk,i,t)=>{const d=document.getElementById(`tdisp-${kk}-${i}`),b=document.getElementById(`tbtn-${kk}-${i}`);if(d){d.textContent=fmt(t.elapsed);d.className='tdisp'+(t.running?' running':'');}if(b)b.textContent=t.running?'⏸':'▶';};
 
 // ── FIREBASE SYNC ──
-function syncToFB(){if(!USERNAME||!ROOM_CODE)return;const st=sl('mba_streak',{days:0,last:''});const today=new Date().toISOString().slice(0,10);const subjs={};for(const s of Object.keys(SUBJECTS))subjs[s]=getProg(s).pct;const qs=sl('mba_quiz_best',{});set(ref(db,`rooms/${ROOM_CODE}/users/${USERNAME}`),{name:USERNAME,overall:getOverall(),subjects:subjs,streak:st.days||0,studiedToday:st.last===today,lastSeen:Date.now(),quizBest:qs});}
+function syncToFB(){if(!USERNAME||!ROOM_CODE)return;const st=sl('mba_streak',{days:0,last:''});const today=new Date().toISOString().slice(0,10);const subjs={};for(const s of SORTED_KEYS)subjs[s]=getProg(s).pct;const qs=sl('mba_quiz_best',{});set(ref(db,`rooms/${ROOM_CODE}/users/${USERNAME}`),{name:USERNAME,overall:getOverall(),subjects:subjs,streak:st.days||0,studiedToday:st.last===today,lastSeen:Date.now(),quizBest:qs});}
 function setPresence(){if(!USERNAME||!ROOM_CODE)return;const r=ref(db,`rooms/${ROOM_CODE}/users/${USERNAME}/lastSeen`);set(r,Date.now());setInterval(()=>set(r,Date.now()),30000);}
 
 // ── LEADERBOARD ──
@@ -1000,7 +1003,7 @@ function renderLB(users){
   if(!sorted.length){document.getElementById('lb-grid').innerHTML='<div class="no-content">No one here yet.</div>';return;}
   document.getElementById('lb-grid').innerHTML=sorted.map(([uname,u],i)=>{
     const isMe=uname===USERNAME,av=AV_COLORS[Math.abs(hash(uname))%AV_COLORS.length],init2=uname.slice(0,2).toUpperCase();
-    const sbars=Object.entries(SUBJECTS).map(([s,info])=>`<div class="lb-sbar"><div class="lb-sname">${s.split(' ')[0]}</div><div class="lb-strack"><div class="lb-sfill" style="width:${u.subjects?.[s]||0}%;background:${info.color}"></div></div></div>`).join('');
+    const sbars=SORTED_SUBJECTS.map(([s,info])=>`<div class="lb-sbar"><div class="lb-sname">${s.split(' ')[0]}</div><div class="lb-strack"><div class="lb-sfill" style="width:${u.subjects?.[s]||0}%;background:${info.color}"></div></div></div>`).join('');
     const qb=u.quizBest?Object.entries(u.quizBest).map(([s,sc])=>`${s.split(' ')[0]}:${sc}%`).join(' · '):'';
     const btns=isMe?`<span style="font-size:0.72rem;color:var(--muted)">You 👋</span>`:`<button class="lb-btn poke" onclick="sendPoke('${uname}')">👉 Poke</button><button class="lb-btn together" onclick="sendInvite('${uname}')">🤝 Together</button>`;
     return`<div class="lb-card${rcs[i]?' '+rcs[i]:''}${isMe?' me':''}">
@@ -1029,7 +1032,7 @@ function listenAnnouncement(){onValue(ref(db,'announcement'),snap=>{const ann=sn
 
 // ── NOTES (fixed, full page, autosave) ──
 function buildNotepad(){
-  document.getElementById('note-subj-row').innerHTML=Object.keys(SUBJECTS).map((s,i)=>`<button class="nstab${i===0?' active':''}" id="nstab-${key(s)}" onclick="setNoteSubj('${s}')">${s.split(' ')[0]}</button>`).join('');
+  document.getElementById('note-subj-row').innerHTML=SORTED_KEYS.map((s,i)=>`<button class="nstab${i===0?' active':''}" id="nstab-${key(s)}" onclick="setNoteSubj('${s}')">${s.split(' ')[0]}</button>`).join('');
   setupNoteEvents();loadNote();
 }
 function setupNoteEvents(){
@@ -1057,19 +1060,19 @@ async function loadNote(){
 window.saveNote=async()=>{const text=document.getElementById('notepad').value;if(noteTab==='personal'){ss(`note_${USERNAME}_${noteSubj}`,text);document.getElementById('note-saved').textContent='Saved!';showToast('📝 Saved!');}else{if(!ROOM_CODE){showToast('Join a room first');return;}await set(ref(db,`rooms/${ROOM_CODE}/notes/${key(noteSubj)}`),{text,by:USERNAME,ts:Date.now()});document.getElementById('note-saved').textContent='Saved to shared!';showToast('📝 Shared notes saved!');}};
 
 // ── FILES ──
-function buildFileFilter(){const el=document.getElementById('file-filter-row');el.innerHTML=['All',...Object.keys(SUBJECTS),'Other'].map(s=>`<button class="ff-btn${s==='All'?' active':''}" id="ffb-${key(s)}" onclick="setFFilter('${s}')">${s.split(' ')[0]}</button>`).join('');}
+function buildFileFilter(){const el=document.getElementById('file-filter-row');el.innerHTML=['All',...SORTED_KEYS,'Other'].map(s=>`<button class="ff-btn${s==='All'?' active':''}" id="ffb-${key(s)}" onclick="setFFilter('${s}')">${s.split(' ')[0]}</button>`).join('');}
 window.setFFilter=s=>{fileFilter=s;document.querySelectorAll('.ff-btn').forEach(b=>b.classList.toggle('active',b.id===`ffb-${key(s)}`));renderFiles(window._allFiles||{});};
 function listenFiles(){if(!ROOM_CODE)return;onValue(ref(db,`rooms/${ROOM_CODE}/files`),snap=>{const f=snap.val()||{};window._allFiles=f;renderFiles(f);});}
 function renderFiles(files){const el=document.getElementById('file-list');const entries=Object.entries(files).filter(([,f])=>fileFilter==='All'||f.subject===fileFilter);if(!entries.length){el.innerHTML='<div class="no-content">No files yet</div>';return;}entries.sort((a,b)=>(b[1].ts||0)-(a[1].ts||0));el.innerHTML=entries.map(([fid,f])=>{const icon=f.type?.includes('pdf')?'📄':f.type?.includes('image')?'🖼️':'📝';return`<div class="file-item"><div class="fi-icon">${icon}</div><div class="fi-info"><div class="fi-name">${f.name}</div><div class="fi-meta">${f.subject||'General'} · ${f.size?Math.round(f.size/1024)+'KB':''} · ${f.uploadedBy||'?'} · ${f.ts?timeAgo(f.ts):''}</div></div><div class="fi-btns"><button class="fi-btn" onclick="openViewer('${fid}')">View</button>${f.uploadedBy===USERNAME?`<button class="fi-btn del" onclick="delFile('${fid}')">✕</button>`:''}</div></div>`;}).join('');}
 window.handleDrop=e=>{e.preventDefault();document.getElementById('upload-zone').classList.remove('drag');const f=e.dataTransfer.files[0];if(f)handleUpload(f);};
-window.handleUpload=async file=>{if(!file)return;if(file.size>5*1024*1024){showToast('❌ Max 5MB');return;}if(!ROOM_CODE){showToast('Join a room first');return;}const prog=document.getElementById('upload-prog'),fill=document.getElementById('upload-fill');prog.style.display='block';fill.style.width='0%';const sm=Object.keys(SUBJECTS).find(s=>file.name.toLowerCase().includes(s.toLowerCase().split(' ')[0]))||'Other';const reader=new FileReader();reader.onprogress=e=>{if(e.lengthComputable)fill.style.width=Math.round(e.loaded/e.total*80)+'%';};reader.onload=async e=>{fill.style.width='90%';await push(ref(db,`rooms/${ROOM_CODE}/files`),{name:file.name,type:file.type,size:file.size,subject:sm,data:e.target.result,uploadedBy:USERNAME,ts:Date.now()});fill.style.width='100%';setTimeout(()=>{prog.style.display='none';fill.style.width='0%';},600);showToast('✅ '+file.name+' uploaded!');};reader.readAsDataURL(file);};
+window.handleUpload=async file=>{if(!file)return;if(file.size>5*1024*1024){showToast('❌ Max 5MB');return;}if(!ROOM_CODE){showToast('Join a room first');return;}const prog=document.getElementById('upload-prog'),fill=document.getElementById('upload-fill');prog.style.display='block';fill.style.width='0%';const sm=SORTED_KEYS.find(s=>file.name.toLowerCase().includes(s.toLowerCase().split(' ')[0]))||'Other';const reader=new FileReader();reader.onprogress=e=>{if(e.lengthComputable)fill.style.width=Math.round(e.loaded/e.total*80)+'%';};reader.onload=async e=>{fill.style.width='90%';await push(ref(db,`rooms/${ROOM_CODE}/files`),{name:file.name,type:file.type,size:file.size,subject:sm,data:e.target.result,uploadedBy:USERNAME,ts:Date.now()});fill.style.width='100%';setTimeout(()=>{prog.style.display='none';fill.style.width='0%';},600);showToast('✅ '+file.name+' uploaded!');};reader.readAsDataURL(file);};
 window.openViewer=async fid=>{const snap=await get(ref(db,`rooms/${ROOM_CODE}/files/${fid}`));const f=snap.val();if(!f)return;document.getElementById('fv-title').textContent=f.name;const body=document.getElementById('fv-body');document.getElementById('fv-overlay').classList.add('show');body.innerHTML=f.type?.includes('image')?`<img src="${f.data}" alt="${f.name}"/>`:f.type?.includes('pdf')?`<iframe src="${f.data}" title="${f.name}"></iframe>`:`<div style="text-align:center;padding:40px;color:var(--muted)">Preview unavailable<br><br><a href="${f.data}" download="${f.name}" style="color:var(--accent);font-weight:600">⬇️ Download ${f.name}</a></div>`;};
 window.closeViewer=()=>{document.getElementById('fv-overlay').classList.remove('show');document.getElementById('fv-body').innerHTML='';};
 window.delFile=async fid=>{if(!confirm('Delete?'))return;await remove(ref(db,`rooms/${ROOM_CODE}/files/${fid}`));showToast('🗑️ Deleted');};
 
 // ── QUIZ ──
 function buildQuizSetup(){
-  document.getElementById('quiz-subj-opts').innerHTML=[...Object.keys(SUBJECTS),'All Subjects'].map(s=>`<div class="quiz-option-card" onclick="selectSubj('${s}',this)"><div class="qoc-label">Subject</div><div class="qoc-val">${s}</div></div>`).join('');
+  document.getElementById('quiz-subj-opts').innerHTML=[...SORTED_KEYS,'All Subjects'].map(s=>`<div class="quiz-option-card" onclick="selectSubj('${s}',this)"><div class="qoc-label">Subject</div><div class="qoc-val">${s}</div></div>`).join('');
 }
 window.selectSubj=(s,el)=>{quizSubj=s;document.querySelectorAll('#quiz-subj-opts .quiz-option-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');checkQuizReady();};
 window.selectCount=(n,el)=>{quizCount=n;document.querySelectorAll('#quiz-count-opts .quiz-opt').forEach(b=>b.classList.remove('selected'));el.classList.add('selected');checkQuizReady();};
@@ -1084,7 +1087,7 @@ window.startQuiz=async()=>{
   document.getElementById('quiz-loading').style.display='block';
   document.getElementById('quiz-q-wrap').style.display='none';
   let topics=[];
-  if(quizSubj==='All Subjects'){for(const[s,info]of Object.entries(SUBJECTS))info.topics.forEach(t=>topics.push({subj:s,topic:t}));}
+  if(quizSubj==='All Subjects'){for(const[s,info]of SORTED_SUBJECTS)info.topics.forEach(t=>topics.push({subj:s,topic:t}));}
   else{SUBJECTS[quizSubj].topics.forEach(t=>topics.push({subj:quizSubj,topic:t}));}
   topics.sort(()=>Math.random()-.5);
   const selected=topics.slice(0,Math.min(quizCount,topics.length));
@@ -1095,7 +1098,7 @@ window.startQuiz=async()=>{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
+        model:'claude-sonnet-4-5',
         max_tokens:4000,
         messages:[{role:'user',content:`You are a quiz generator for MBA Marketing students at KJ Somaiya Institute of Management. Generate exactly ${selected.length} MCQ questions based on these topics from the session plan:\n\n${topicList}\n\nTimestamp for uniqueness: ${ts}\n\nRules:\n- Each question must test understanding of the topic, not just recall the name\n- 4 options (A, B, C, D)\n- Only 1 correct answer\n- Keep wrong options plausible but clearly wrong\n- Explanation should be 1-2 sentences, educational\n- Questions should vary in difficulty\n- Make questions different from standard textbook definitions — focus on application\n\nRespond ONLY with valid JSON array, no markdown, no extra text:\n[\n  {\n    "subject": "subject name",\n    "question": "question text",\n    "options": ["A. ...", "B. ...", "C. ...", "D. ..."],\n    "correct": 0,\n    "explanation": "brief explanation"\n  }\n]`}]
       })
@@ -1351,7 +1354,7 @@ function renderQBTopics(questions){
   const max=sorted[0]?.count||1;
   if(!sorted.length){el.innerHTML=`<div class="no-content">No ${qbSubjFilter==='All'?'':qbSubjFilter+' '}topic data yet</div>`;return;}
   const grouped={};sorted.forEach(t=>{if(!grouped[t.subject])grouped[t.subject]=[];grouped[t.subject].push(t);});
-  const subjOrder=qbSubjFilter==='All'?Object.keys(SUBJECTS):[qbSubjFilter];
+  const subjOrder=qbSubjFilter==='All'?SORTED_KEYS:[qbSubjFilter];
   el.innerHTML=subjOrder.filter(s=>grouped[s]).map(s=>{
     const sInfo=SUBJECTS[s];
     return`<div style="margin-bottom:18px;">
