@@ -1,469 +1,825 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MBA Study Tracker</title>
 <style>
-  :root {
-    --bg: #f0f2f8;
-    --card: #ffffff;
-    --text: #1f2937;
-    --muted: #6b7280;
-    --border: #e5e7eb;
-    --imc: #7c3aed;
-    --intl: #3b82f6;
-    --retail: #10b981;
-    --strategy: #f59e0b;
-    --done-bg: #d1fae5;
-    --done-text: #065f46;
-    --prog-bg: #fef3c7;
-    --prog-text: #92400e;
-    --none-bg: #f3f4f6;
-    --none-text: #6b7280;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+:root {
+  --bg:#f0f2f8;--card:#ffffff;--text:#1f2937;--muted:#6b7280;
+  --border:#e5e7eb;--header:#1e1e2e;--header2:#2d2d44;
+  --done-bg:#d1fae5;--done-text:#065f46;
+  --prog-bg:#fef3c7;--prog-text:#92400e;
+  --none-bg:#f3f4f6;--none-text:#6b7280;
+  --input-bg:#ffffff;--shadow:rgba(0,0,0,0.07);--streak:#f97316;
+}
+[data-theme="dark"]{
+  --bg:#0f0f1a;--card:#1a1a2e;--text:#e2e8f0;--muted:#94a3b8;
+  --border:#2d2d44;--header:#0d0d1a;--header2:#1a1a30;
+  --done-bg:#064e3b;--done-text:#6ee7b7;
+  --prog-bg:#451a03;--prog-text:#fcd34d;
+  --none-bg:#1e1e30;--none-text:#94a3b8;
+  --input-bg:#1e1e30;--shadow:rgba(0,0,0,0.3);--streak:#fb923c;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s;}
 
-  header {
-    background: #1e1e2e;
-    color: white;
-    padding: 24px 32px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  header h1 { font-size: 1.6rem; font-weight: 700; }
-  header p { font-size: 0.85rem; color: #9ca3af; margin-top: 4px; }
-  .overall-badge {
-    background: #2d2d44;
-    border-radius: 12px;
-    padding: 10px 20px;
-    text-align: center;
-    min-width: 140px;
-  }
-  .overall-badge .pct { font-size: 2rem; font-weight: 800; color: #a78bfa; }
-  .overall-badge .label { font-size: 0.75rem; color: #9ca3af; }
+/* ── SETUP SCREEN ── */
+#setup-screen{position:fixed;inset:0;background:var(--header);display:flex;align-items:center;justify-content:center;z-index:1000;flex-direction:column;gap:0;}
+.setup-box{background:var(--card);border-radius:20px;padding:36px 40px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.4);}
+.setup-box h2{font-size:1.5rem;font-weight:800;margin-bottom:4px;color:var(--text);}
+.setup-box p{font-size:0.84rem;color:var(--muted);margin-bottom:24px;}
+.setup-input{width:100%;padding:11px 14px;border-radius:10px;border:2px solid var(--border);font-size:0.95rem;background:var(--input-bg);color:var(--text);outline:none;margin-bottom:12px;transition:border .2s;}
+.setup-input:focus{border-color:#7c3aed;}
+.setup-btn{width:100%;padding:12px;border-radius:10px;border:none;background:#7c3aed;color:white;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s;margin-bottom:10px;}
+.setup-btn:hover{background:#6d28d9;}
+.setup-divider{text-align:center;color:var(--muted);font-size:0.8rem;margin:8px 0;}
+.setup-btn.secondary{background:var(--none-bg);color:var(--text);}
+.setup-btn.secondary:hover{background:var(--border);}
+.room-info{font-size:0.78rem;color:var(--muted);text-align:center;margin-top:8px;}
+.room-info span{font-weight:700;color:#7c3aed;cursor:pointer;}
 
-  .main { max-width: 1100px; margin: 0 auto; padding: 28px 20px; }
+/* ── HEADER ── */
+header{background:var(--header);color:white;padding:18px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.header-left h1{font-size:1.35rem;font-weight:700;}
+.header-left p{font-size:0.8rem;color:#9ca3af;margin-top:2px;}
+.header-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.overall-badge{background:var(--header2);border-radius:12px;padding:7px 16px;text-align:center;min-width:95px;}
+.overall-badge .pct{font-size:1.7rem;font-weight:800;color:#a78bfa;}
+.overall-badge .label{font-size:0.68rem;color:#9ca3af;}
+.streak-badge{background:var(--header2);border-radius:12px;padding:7px 12px;text-align:center;}
+.streak-badge .s-num{font-size:1.3rem;font-weight:800;color:var(--streak);}
+.streak-badge .s-label{font-size:0.65rem;color:#9ca3af;}
+.hdr-btn{background:var(--header2);border:none;color:white;border-radius:10px;padding:7px 12px;cursor:pointer;font-size:0.95rem;transition:background .2s;}
+.hdr-btn:hover{background:#3d3d5c;}
+.user-chip{background:var(--header2);border-radius:10px;padding:7px 12px;font-size:0.8rem;color:#a78bfa;font-weight:700;cursor:pointer;}
 
-  /* Summary Cards */
-  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 32px; }
-  .card {
-    background: var(--card);
-    border-radius: 14px;
-    padding: 18px 20px;
-    border-top: 4px solid var(--c);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-    cursor: pointer;
-    transition: transform .15s, box-shadow .15s;
-  }
-  .card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
-  .card .c-title { font-size: 0.8rem; font-weight: 600; color: var(--c); text-transform: uppercase; letter-spacing: .05em; }
-  .card .c-count { font-size: 1.6rem; font-weight: 800; color: var(--text); margin: 6px 0 4px; }
-  .card .c-sub { font-size: 0.78rem; color: var(--muted); }
-  .card .bar-bg { height: 6px; background: var(--border); border-radius: 99px; margin-top: 12px; overflow: hidden; }
-  .card .bar-fg { height: 100%; background: var(--c); border-radius: 99px; transition: width .5s ease; }
+/* ── MAIN ── */
+.main{max-width:1200px;margin:0 auto;padding:22px 18px;}
 
-  /* Tabs */
-  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-  .tab {
-    padding: 8px 18px;
-    border-radius: 8px;
-    border: 2px solid var(--border);
-    background: var(--card);
-    cursor: pointer;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--muted);
-    transition: all .15s;
-  }
-  .tab:hover { border-color: #d1d5db; color: var(--text); }
-  .tab.active { background: var(--c); border-color: var(--c); color: white; }
+/* ── NAV TABS ── */
+.main-nav{display:flex;gap:6px;margin-bottom:22px;border-bottom:2px solid var(--border);padding-bottom:0;}
+.main-tab{padding:10px 20px;font-size:0.88rem;font-weight:700;cursor:pointer;border:none;background:none;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s;}
+.main-tab.active{color:#7c3aed;border-bottom-color:#7c3aed;}
+.main-tab:hover{color:var(--text);}
+.main-view{display:none;}
+.main-view.active{display:block;}
 
-  /* Topic table */
-  .subject-panel { display: none; }
-  .subject-panel.active { display: block; }
-  .panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  .panel-header h2 { font-size: 1.2rem; font-weight: 700; color: var(--c); }
-  .panel-stats { font-size: 0.85rem; color: var(--muted); }
-  .panel-stats span { font-weight: 700; color: var(--c); }
+/* ── COUNTDOWN ── */
+.countdown-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:12px;margin-bottom:22px;}
+.countdown-card{background:var(--card);border-radius:14px;padding:13px 15px;border-left:4px solid var(--c);box-shadow:0 1px 4px var(--shadow);display:flex;justify-content:space-between;align-items:center;}
+.cd-subj{font-size:0.71rem;font-weight:700;color:var(--c);text-transform:uppercase;letter-spacing:.05em;}
+.cd-date{font-size:0.76rem;color:var(--muted);margin-top:2px;}
+.cd-days{font-size:1.9rem;font-weight:900;color:var(--c);line-height:1;}
+.cd-days-label{font-size:0.6rem;color:var(--muted);text-align:center;margin-top:2px;}
+.countdown-card.urgent .cd-days{color:#ef4444;}
 
-  .actions { display: flex; gap: 8px; }
-  .btn-all {
-    padding: 6px 14px;
-    border-radius: 8px;
-    border: none;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    background: var(--done-bg);
-    color: var(--done-text);
-    transition: opacity .15s;
-  }
-  .btn-all:hover { opacity: .8; }
-  .btn-reset { background: var(--none-bg); color: var(--none-text); }
+/* ── STATS ── */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:22px;}
+.stat-box{background:var(--card);border-radius:12px;padding:13px 15px;box-shadow:0 1px 4px var(--shadow);text-align:center;}
+.sb-val{font-size:1.55rem;font-weight:800;}
+.sb-label{font-size:0.71rem;color:var(--muted);margin-top:2px;}
 
-  table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
-  thead th { background: #1e1e2e; color: white; padding: 12px 16px; text-align: left; font-size: 0.82rem; font-weight: 600; letter-spacing: .04em; }
-  thead th:first-child { width: 42px; text-align: center; }
-  thead th:nth-child(3) { width: 160px; }
-  thead th:nth-child(4) { width: 220px; }
-  tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: #fafbff; }
-  tbody td { padding: 12px 16px; font-size: 0.88rem; vertical-align: middle; }
-  tbody td:first-child { text-align: center; color: var(--muted); font-size: 0.8rem; font-weight: 600; }
-  tbody td.topic-name { font-weight: 500; }
-  tbody tr.done td.topic-name { text-decoration: line-through; color: var(--muted); }
+/* ── SUBJECT CARDS ── */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(205px,1fr));gap:13px;margin-bottom:22px;}
+.card{background:var(--card);border-radius:14px;padding:15px 17px;border-top:4px solid var(--c);box-shadow:0 1px 4px var(--shadow);cursor:pointer;transition:transform .15s,box-shadow .15s;}
+.card:hover{transform:translateY(-2px);box-shadow:0 4px 16px var(--shadow);}
+.c-title{font-size:0.71rem;font-weight:700;color:var(--c);text-transform:uppercase;letter-spacing:.05em;}
+.c-count{font-size:1.45rem;font-weight:800;margin:4px 0 2px;}
+.c-sub,.c-exam{font-size:0.71rem;color:var(--muted);}
+.c-exam{margin-top:3px;font-style:italic;}
+.bar-bg{height:6px;background:var(--border);border-radius:99px;margin-top:9px;overflow:hidden;}
+.bar-fg{height:100%;background:var(--c);border-radius:99px;transition:width .5s ease;}
 
-  /* Status selector */
-  select.status-sel {
-    padding: 5px 10px;
-    border-radius: 8px;
-    border: 1.5px solid var(--border);
-    font-size: 0.82rem;
-    font-weight: 600;
-    cursor: pointer;
-    background: var(--none-bg);
-    color: var(--none-text);
-    outline: none;
-    transition: all .15s;
-    width: 140px;
-  }
-  select.status-sel.done { background: var(--done-bg); color: var(--done-text); border-color: #6ee7b7; }
-  select.status-sel.inprogress { background: var(--prog-bg); color: var(--prog-text); border-color: #fcd34d; }
+/* ── CHART ── */
+.chart-section{margin-bottom:22px;}
+.chart-section h3{font-size:0.93rem;font-weight:700;margin-bottom:11px;}
+.chart-bars{display:flex;flex-direction:column;gap:11px;background:var(--card);border-radius:14px;padding:17px 20px;box-shadow:0 1px 4px var(--shadow);}
+.chart-row{display:flex;align-items:center;gap:11px;}
+.chart-label{width:165px;font-size:0.79rem;font-weight:600;flex-shrink:0;}
+.chart-track{flex:1;height:19px;background:var(--border);border-radius:99px;overflow:hidden;}
+.chart-fill{height:100%;border-radius:99px;transition:width .6s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;}
+.chart-fill span{font-size:0.66rem;font-weight:700;color:white;white-space:nowrap;}
+.chart-num{width:52px;font-size:0.77rem;color:var(--muted);text-align:right;flex-shrink:0;}
 
-  /* Notes */
-  input.note-input {
-    width: 100%;
-    padding: 5px 10px;
-    border-radius: 8px;
-    border: 1.5px solid var(--border);
-    font-size: 0.82rem;
-    background: transparent;
-    color: var(--text);
-    outline: none;
-    transition: border .15s;
-  }
-  input.note-input:focus { border-color: #a5b4fc; }
+/* ── TOPIC TABS ── */
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:15px;}
+.tab{padding:6px 14px;border-radius:8px;border:2px solid var(--border);background:var(--card);cursor:pointer;font-size:0.8rem;font-weight:600;color:var(--muted);transition:all .15s;}
+.tab.active{background:var(--c);border-color:var(--c);color:white;}
 
-  /* Chart area */
-  .chart-section { margin-bottom: 32px; }
-  .chart-section h3 { font-size: 1rem; font-weight: 700; margin-bottom: 14px; color: var(--text); }
-  .chart-bars { display: flex; flex-direction: column; gap: 14px; background: var(--card); border-radius: 14px; padding: 20px 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
-  .chart-row { display: flex; align-items: center; gap: 14px; }
-  .chart-label { width: 160px; font-size: 0.82rem; font-weight: 600; color: var(--text); flex-shrink: 0; }
-  .chart-track { flex: 1; height: 22px; background: var(--border); border-radius: 99px; overflow: hidden; position: relative; }
-  .chart-fill { height: 100%; border-radius: 99px; transition: width .6s ease; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; }
-  .chart-fill span { font-size: 0.7rem; font-weight: 700; color: white; white-space: nowrap; }
-  .chart-num { width: 70px; font-size: 0.82rem; color: var(--muted); text-align: right; flex-shrink: 0; }
+/* ── PANEL ── */
+.subject-panel{display:none;}
+.subject-panel.active{display:block;}
+.panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;flex-wrap:wrap;gap:9px;}
+.panel-header h2{font-size:1.08rem;font-weight:700;color:var(--c);}
+.panel-stats{font-size:0.8rem;color:var(--muted);}
+.panel-stats span{font-weight:700;color:var(--c);}
+.actions{display:flex;gap:7px;}
+.btn-sm{padding:5px 11px;border-radius:8px;border:none;font-size:0.76rem;font-weight:600;cursor:pointer;transition:opacity .15s;}
+.btn-sm:hover{opacity:.8;}
+.btn-done{background:var(--done-bg);color:var(--done-text);}
+.btn-reset{background:var(--none-bg);color:var(--none-text);}
 
-  footer { display: none; }
+table{width:100%;border-collapse:collapse;background:var(--card);border-radius:12px;overflow:hidden;box-shadow:0 1px 4px var(--shadow);}
+thead th{background:var(--header);color:white;padding:10px 12px;text-align:left;font-size:0.77rem;font-weight:600;letter-spacing:.03em;}
+th.th-num{width:32px;text-align:center;}th.th-status{width:136px;}th.th-priority{width:114px;}th.th-timer{width:105px;}th.th-notes{width:185px;}
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--none-bg);}
+tbody td{padding:9px 12px;font-size:0.83rem;vertical-align:middle;}
+td.td-num{text-align:center;color:var(--muted);font-size:0.74rem;font-weight:600;}
+td.topic-name{font-weight:500;line-height:1.4;}
+tr.done td.topic-name{text-decoration:line-through;color:var(--muted);}
 
-  @media (max-width: 600px) {
-    header { padding: 16px; }
-    header h1 { font-size: 1.2rem; }
-    .main { padding: 16px 12px; }
-    table { font-size: 0.8rem; }
-    thead th:nth-child(4) { display: none; }
-    tbody td:nth-child(4) { display: none; }
-  }
+select.status-sel{padding:4px 7px;border-radius:8px;border:1.5px solid var(--border);font-size:0.78rem;font-weight:600;cursor:pointer;background:var(--none-bg);color:var(--none-text);outline:none;transition:all .15s;width:124px;}
+select.status-sel.done{background:var(--done-bg);color:var(--done-text);border-color:#6ee7b7;}
+select.status-sel.inprogress{background:var(--prog-bg);color:var(--prog-text);border-color:#fcd34d;}
+
+select.priority-sel{padding:4px 7px;border-radius:8px;border:1.5px solid var(--border);font-size:0.75rem;font-weight:600;cursor:pointer;background:var(--none-bg);color:var(--none-text);outline:none;width:100px;}
+select.priority-sel.high{background:#fee2e2;color:#991b1b;border-color:#fca5a5;}
+select.priority-sel.medium{background:#fef3c7;color:#92400e;border-color:#fcd34d;}
+select.priority-sel.low{background:#d1fae5;color:#065f46;border-color:#6ee7b7;}
+[data-theme="dark"] select.priority-sel.high{background:#450a0a;color:#fca5a5;}
+[data-theme="dark"] select.priority-sel.medium{background:#451a03;color:#fcd34d;}
+[data-theme="dark"] select.priority-sel.low{background:#064e3b;color:#6ee7b7;}
+
+.timer-wrap{display:flex;align-items:center;gap:4px;}
+.timer-display{font-size:0.79rem;font-weight:700;min-width:42px;font-variant-numeric:tabular-nums;}
+.timer-display.running{color:#10b981;}
+.timer-btn{border:none;background:none;cursor:pointer;font-size:0.86rem;padding:2px 3px;border-radius:5px;transition:background .15s;color:var(--text);}
+.timer-btn:hover{background:var(--border);}
+
+input.note-input{width:100%;padding:4px 7px;border-radius:8px;border:1.5px solid var(--border);font-size:0.77rem;background:var(--input-bg);color:var(--text);outline:none;transition:border .15s;}
+input.note-input:focus{border-color:#a5b4fc;}
+
+/* ── LEADERBOARD ── */
+.lb-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
+.lb-header h2{font-size:1.2rem;font-weight:800;}
+.room-badge{background:var(--card);border:2px solid var(--border);border-radius:10px;padding:7px 14px;font-size:0.8rem;color:var(--muted);}
+.room-badge strong{color:#7c3aed;}
+.copy-btn{background:#7c3aed;color:white;border:none;border-radius:8px;padding:6px 12px;font-size:0.78rem;font-weight:600;cursor:pointer;margin-left:8px;}
+
+.lb-grid{display:flex;flex-direction:column;gap:14px;}
+.lb-card{background:var(--card);border-radius:16px;padding:18px 20px;box-shadow:0 1px 6px var(--shadow);border:2px solid transparent;transition:border .2s;}
+.lb-card.rank-1{border-color:#f59e0b;}
+.lb-card.rank-2{border-color:#94a3b8;}
+.lb-card.rank-3{border-color:#b45309;}
+.lb-card.is-me{border-color:#7c3aed;}
+.lb-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
+.lb-name{display:flex;align-items:center;gap:10px;}
+.lb-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;color:white;flex-shrink:0;}
+.lb-username{font-size:1rem;font-weight:700;}
+.lb-streak-info{font-size:0.76rem;color:var(--muted);}
+.lb-right{display:flex;align-items:center;gap:10px;}
+.lb-trophy{font-size:1.6rem;}
+.lb-overall{font-size:1.5rem;font-weight:900;color:#7c3aed;}
+.lb-overall-label{font-size:0.65rem;color:var(--muted);}
+.lb-subj-bars{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-bottom:12px;}
+.lb-subj-row{display:flex;flex-direction:column;gap:3px;}
+.lb-subj-name{font-size:0.71rem;font-weight:600;color:var(--muted);}
+.lb-subj-track{height:8px;background:var(--border);border-radius:99px;overflow:hidden;}
+.lb-subj-fill{height:100%;border-radius:99px;transition:width .6s ease;}
+.lb-subj-pct{font-size:0.68rem;color:var(--muted);text-align:right;}
+.lb-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.taunt-btn{padding:5px 12px;border-radius:8px;border:none;font-size:0.77rem;font-weight:600;cursor:pointer;background:var(--none-bg);color:var(--none-text);transition:all .15s;}
+.taunt-btn:hover{background:#fee2e2;color:#991b1b;}
+.study-together-btn{padding:5px 12px;border-radius:8px;border:none;font-size:0.77rem;font-weight:600;cursor:pointer;background:var(--done-bg);color:var(--done-text);transition:all .15s;}
+.study-together-btn:hover{opacity:.8;}
+
+/* ── STUDY TOGETHER ── */
+.together-section{margin-top:24px;}
+.together-section h3{font-size:1rem;font-weight:700;margin-bottom:13px;}
+.together-box{background:var(--card);border-radius:16px;padding:20px;box-shadow:0 1px 6px var(--shadow);}
+.online-users{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+.online-chip{display:flex;align-items:center;gap:7px;background:var(--none-bg);border-radius:99px;padding:6px 14px;font-size:0.82rem;font-weight:600;}
+.online-dot{width:8px;height:8px;border-radius:50%;background:#10b981;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.chat-area{height:180px;overflow-y:auto;border:1.5px solid var(--border);border-radius:10px;padding:10px;margin-bottom:10px;display:flex;flex-direction:column;gap:6px;}
+.chat-msg{font-size:0.82rem;line-height:1.4;}
+.chat-msg .cm-name{font-weight:700;color:#7c3aed;}
+.chat-msg .cm-name.me{color:#10b981;}
+.chat-msg .cm-time{font-size:0.68rem;color:var(--muted);margin-left:6px;}
+.chat-msg.system{color:var(--muted);font-style:italic;font-size:0.78rem;}
+.chat-input-row{display:flex;gap:8px;}
+.chat-input{flex:1;padding:8px 12px;border-radius:8px;border:1.5px solid var(--border);font-size:0.83rem;background:var(--input-bg);color:var(--text);outline:none;}
+.chat-input:focus{border-color:#7c3aed;}
+.chat-send{padding:8px 16px;border-radius:8px;border:none;background:#7c3aed;color:white;font-size:0.83rem;font-weight:700;cursor:pointer;}
+.chat-send:hover{background:#6d28d9;}
+
+/* ── TAUNTS FEED ── */
+.taunt-feed{margin-top:24px;}
+.taunt-feed h3{font-size:1rem;font-weight:700;margin-bottom:13px;}
+.taunt-list{display:flex;flex-direction:column;gap:10px;}
+.taunt-item{background:var(--card);border-radius:12px;padding:13px 16px;box-shadow:0 1px 4px var(--shadow);display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+.taunt-text{font-size:0.84rem;line-height:1.4;}
+.taunt-from{font-size:0.72rem;color:var(--muted);margin-top:4px;}
+.taunt-time{font-size:0.7rem;color:var(--muted);flex-shrink:0;}
+.no-taunts{color:var(--muted);font-size:0.84rem;font-style:italic;text-align:center;padding:20px;}
+
+/* ── LOADING ── */
+.lb-loading{text-align:center;padding:40px;color:var(--muted);font-size:0.9rem;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1e1e2e;color:white;padding:10px 20px;border-radius:10px;font-size:0.83rem;font-weight:600;z-index:9999;transition:transform .3s;pointer-events:none;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+footer{text-align:center;padding:18px;color:var(--muted);font-size:0.73rem;}
+
+@media(max-width:640px){
+  header{padding:12px 14px;}.header-left h1{font-size:1rem;}
+  .main{padding:12px 8px;}
+  th.th-timer,tbody td:nth-child(5),th.th-notes,tbody td:nth-child(6){display:none;}
+  .chart-label{width:100px;}
+}
 </style>
 </head>
 <body>
 
+<!-- SETUP SCREEN -->
+<div id="setup-screen">
+  <div class="setup-box">
+    <h2>📚 MBA Study Tracker</h2>
+    <p>Enter your name and join or create a study room with friends.</p>
+    <input class="setup-input" id="setup-name" placeholder="Your name (e.g. Faraz)" maxlength="20"/>
+    <input class="setup-input" id="setup-room" placeholder="Room code (e.g. s4mba2026)" maxlength="20"/>
+    <button class="setup-btn" onclick="joinRoom()">🚀 Join / Create Room</button>
+    <div class="room-info">Share the same room code with friends to compete together.<br>Leave blank to use default room: <span onclick="document.getElementById('setup-room').value='s4mba2026'">s4mba2026</span></div>
+  </div>
+</div>
+
 <header>
-  <div>
+  <div class="header-left">
     <h1>📚 MBA Marketing — Study Tracker</h1>
     <p>Batch 2024–26 &nbsp;·&nbsp; Semester IV</p>
   </div>
-  <div class="overall-badge">
-    <div class="pct" id="overall-pct">0%</div>
-    <div class="label">Overall Progress</div>
+  <div class="header-right">
+    <div class="streak-badge"><div class="s-num" id="streak-num">0🔥</div><div class="s-label">day streak</div></div>
+    <div class="overall-badge"><div class="pct" id="overall-pct">0%</div><div class="label">Overall</div></div>
+    <div class="user-chip" id="user-chip" onclick="showToast('Room: '+ROOM_CODE)">👤 ...</div>
+    <button class="hdr-btn" onclick="requestNotification()" title="Reminders">🔔</button>
+    <button class="hdr-btn" onclick="toggleDark()" id="dark-btn">🌙</button>
   </div>
 </header>
 
 <div class="main">
-
-  <!-- Summary Cards -->
-  <div class="cards" id="cards"></div>
-
-  <!-- Bar Chart -->
-  <div class="chart-section">
-    <h3>📊 Progress by Subject</h3>
-    <div class="chart-bars" id="chart"></div>
+  <!-- Main Nav -->
+  <div class="main-nav">
+    <button class="main-tab active" onclick="switchMainTab('tracker',this)">📖 My Tracker</button>
+    <button class="main-tab" onclick="switchMainTab('leaderboard',this)">🏆 Leaderboard</button>
   </div>
 
-  <!-- Tabs -->
-  <div class="tabs" id="tabs"></div>
+  <!-- TRACKER VIEW -->
+  <div class="main-view active" id="view-tracker">
+    <div class="countdown-strip" id="countdown"></div>
+    <div class="stats-row" id="stats-row"></div>
+    <div class="cards" id="cards"></div>
+    <div class="chart-section">
+      <h3>📊 Progress by Subject</h3>
+      <div class="chart-bars" id="chart"></div>
+    </div>
+    <div class="tabs" id="tabs"></div>
+    <div id="panels"></div>
+  </div>
 
-  <!-- Subject panels -->
-  <div id="panels"></div>
-
-</div>
-
-<footer>Progress is saved in your browser automatically &nbsp;·&nbsp; Made for KJ Somaiya MBA Marketing 2024–26</footer>
-
-<script>
-const SUBJECTS = {
-  "IMC": {
-    color: "#7c3aed",
-    topics: [
-      "Intro to IMC, components and fundamental concepts and tools",
-      "Elements of the Promotional Mix & Role of IMC in Marketing",
-      "Advertising Management: Communication Process, Response Models, FCB Model, Social Consumer Response Journey",
-      "Advertising Campaign Development: Message Strategy, Source and Channel factors",
-      "Advertising Creativity, DAGMAR, Creative Appreciation and Evaluation Workshop, Advertising Organization",
-      "Brand Pyramid, Keller's Brand Resonance Model, Kapferer's Brand Identity Prism",
-      "Development of Creative Brief, Consumer Insight, Copy Testing and Measurement, Y&R Model",
-      "Sales Promotion — planning and evaluation",
-      "PR and Publicity — PR campaign planning",
-      "New theories in New Media — Experiential Marketing, Buzz Marketing, Viral Campaigns, AR",
-      "Media Strategies, Media Planning and Media Mix Modelling"
-    ]
-  },
-  "International Marketing": {
-    color: "#3b82f6",
-    topics: [
-      "International Marketing — concept, need and scope",
-      "International Marketing Environment and dynamics including competitive and cultural dynamics",
-      "Trade Distortions and Market Barriers, WTO and its implications for International Marketing",
-      "Multinational Market Regions and Market Groups",
-      "Foreign Market Entry Strategies, Strategic Alliances and Global Market Opportunities",
-      "Product Planning and Development, Global Product Adaptation & Branding Strategies",
-      "Country of Origin Effect and Global Brands, International Product Strategies, IPLC",
-      "Pricing for International Markets, Countertrade, Export Procedure, Terms of Payment, Transfer Pricing",
-      "Global Logistics and Channels of Distribution"
-    ]
-  },
-  "Retail Marketing": {
-    color: "#10b981",
-    topics: [
-      "Introduction to Retailing, Retail Theories",
-      "Retail Formats and Classification, E-retailing",
-      "Retail Marketing Mix, KPIs in Retail (GMROI, DPP etc.), Visual Merchandising",
-      "Retail Strategy, Category Management",
-      "Retail Store Operations and SCM, Branding and Private Labels",
-      "Rural Retailing, Global Retailing",
-      "Introduction to Luxury Marketing, Luxury Retail Experience, Supply Chain and Sustainability in Luxury Retail"
-    ]
-  },
-  "Marketing Strategy": {
-    color: "#f59e0b",
-    topics: [
-      "Marketing Strategy Overview — STPD",
-      "Growth Strategies",
-      "Ansoff Matrix and its application to marketing strategies",
-      "Portfolio Analysis — BCG Matrix, GE Matrix, 7S Framework",
-      "Marketing Mix Strategies (4Ps)",
-      "Warfare Strategies — Defensive and Offensive",
-      "Competitor Analysis",
-      "Market Entry Strategies",
-      "Strategies for Mature/Declining Markets, Revival Strategies, Blue Ocean Strategy"
-    ]
-  }
-};
-
-const STATUS = { "Not Started": 0, "In Progress": 1, "Done": 2 };
-const STATUS_LABELS = ["Not Started", "In Progress", "Done"];
-
-// Load from localStorage
-function loadData() {
-  try { return JSON.parse(localStorage.getItem('mba_tracker') || '{}'); } catch { return {}; }
-}
-function saveData(data) {
-  localStorage.setItem('mba_tracker', JSON.stringify(data));
-}
-
-let data = loadData();
-
-function getSubjectProgress(subj) {
-  const topics = SUBJECTS[subj].topics;
-  const done = topics.filter((_, i) => (data[subj]?.[i]?.status || 'Not Started') === 'Done').length;
-  return { done, total: topics.length, pct: topics.length ? done / topics.length : 0 };
-}
-
-function getOverallProgress() {
-  let total = 0, done = 0;
-  for (const s of Object.keys(SUBJECTS)) {
-    const p = getSubjectProgress(s);
-    total += p.total; done += p.done;
-  }
-  return total ? Math.round(done / total * 100) : 0;
-}
-
-function updateAll() {
-  // Overall
-  document.getElementById('overall-pct').textContent = getOverallProgress() + '%';
-
-  // Cards
-  const cardsEl = document.getElementById('cards');
-  cardsEl.innerHTML = '';
-  for (const [name, info] of Object.entries(SUBJECTS)) {
-    const p = getSubjectProgress(name);
-    const pct = Math.round(p.pct * 100);
-    cardsEl.innerHTML += `
-      <div class="card" style="--c:${info.color}" onclick="switchTab('${name}')">
-        <div class="c-title">${name}</div>
-        <div class="c-count">${p.done} <span style="font-size:1rem;font-weight:400;color:var(--muted)">/ ${p.total}</span></div>
-        <div class="c-sub">Topics completed</div>
-        <div class="bar-bg"><div class="bar-fg" style="width:${pct}%"></div></div>
-      </div>`;
-  }
-
-  // Chart
-  const chartEl = document.getElementById('chart');
-  chartEl.innerHTML = '';
-  for (const [name, info] of Object.entries(SUBJECTS)) {
-    const p = getSubjectProgress(name);
-    const pct = Math.round(p.pct * 100);
-    chartEl.innerHTML += `
-      <div class="chart-row">
-        <div class="chart-label">${name}</div>
-        <div class="chart-track">
-          <div class="chart-fill" style="width:${pct}%;background:${info.color}">
-            ${pct > 10 ? `<span>${pct}%</span>` : ''}
-          </div>
-        </div>
-        <div class="chart-num">${p.done}/${p.total}</div>
-      </div>`;
-  }
-
-  // Update panel stats
-  for (const [name, info] of Object.entries(SUBJECTS)) {
-    const p = getSubjectProgress(name);
-    const el = document.getElementById(`stat-${name.replace(/\s+/g,'_')}`);
-    if (el) el.innerHTML = `<span>${p.done} / ${p.total}</span> topics done`;
-  }
-
-  // Row styling
-  for (const [name, info] of Object.entries(SUBJECTS)) {
-    SUBJECTS[name].topics.forEach((_, i) => {
-      const tr = document.getElementById(`row-${name.replace(/\s+/g,'_')}-${i}`);
-      const sel = document.getElementById(`sel-${name.replace(/\s+/g,'_')}-${i}`);
-      if (!tr || !sel) return;
-      const status = data[name]?.[i]?.status || 'Not Started';
-      tr.className = status === 'Done' ? 'done' : '';
-      sel.className = 'status-sel' + (status === 'Done' ? ' done' : status === 'In Progress' ? ' inprogress' : '');
-    });
-  }
-}
-
-function buildPanels() {
-  const tabsEl = document.getElementById('tabs');
-  const panelsEl = document.getElementById('panels');
-  let firstTab = true;
-
-  for (const [name, info] of Object.entries(SUBJECTS)) {
-    const key = name.replace(/\s+/g, '_');
-
-    // Tab
-    const tab = document.createElement('div');
-    tab.className = 'tab' + (firstTab ? ' active' : '');
-    tab.style.setProperty('--c', info.color);
-    tab.textContent = name;
-    tab.dataset.subject = name;
-    tab.onclick = () => switchTab(name);
-    tabsEl.appendChild(tab);
-
-    // Panel
-    let rows = '';
-    info.topics.forEach((topic, i) => {
-      const status = data[name]?.[i]?.status || 'Not Started';
-      const note = data[name]?.[i]?.note || '';
-      rows += `
-        <tr id="row-${key}-${i}" class="${status === 'Done' ? 'done' : ''}">
-          <td>${i + 1}</td>
-          <td class="topic-name">${topic}</td>
-          <td>
-            <select class="status-sel${status === 'Done' ? ' done' : status === 'In Progress' ? ' inprogress' : ''}"
-              id="sel-${key}-${i}"
-              onchange="updateStatus('${name}', ${i}, this.value)">
-              <option ${status==='Not Started'?'selected':''}>Not Started</option>
-              <option ${status==='In Progress'?'selected':''}>In Progress</option>
-              <option ${status==='Done'?'selected':''}>Done</option>
-            </select>
-          </td>
-          <td><input class="note-input" type="text" placeholder="Add a note..." value="${note.replace(/"/g,'&quot;')}"
-            oninput="updateNote('${name}', ${i}, this.value)" /></td>
-        </tr>`;
-    });
-
-    const panel = document.createElement('div');
-    panel.className = 'subject-panel' + (firstTab ? ' active' : '');
-    panel.id = `panel-${key}`;
-    panel.style.setProperty('--c', info.color);
-    panel.innerHTML = `
-      <div class="panel-header">
-        <div>
-          <h2>${name}</h2>
-          <div class="panel-stats" id="stat-${key}">0 / ${info.topics.length} topics done</div>
-        </div>
-        <div class="actions">
-          <button class="btn-all" onclick="markAll('${name}', 'Done')">✅ Mark All Done</button>
-          <button class="btn-all btn-reset" onclick="markAll('${name}', 'Not Started')">↩ Reset</button>
+  <!-- LEADERBOARD VIEW -->
+  <div class="main-view" id="view-leaderboard">
+    <div class="lb-header">
+      <h2>🏆 Leaderboard</h2>
+      <div>
+        <div class="room-badge" id="room-badge">Room: <strong id="room-display">—</strong>
+          <button class="copy-btn" onclick="copyRoomCode()">📋 Copy Code</button>
         </div>
       </div>
-      <table>
-        <thead><tr><th>#</th><th>Topic</th><th>Status</th><th>Notes</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>`;
-    panelsEl.appendChild(panel);
-    firstTab = false;
+    </div>
+    <div class="lb-grid" id="lb-grid"><div class="lb-loading">⏳ Loading leaderboard...</div></div>
+
+    <!-- Study Together -->
+    <div class="together-section">
+      <h3>🤝 Study Together — Who's Online</h3>
+      <div class="together-box">
+        <div class="online-users" id="online-users"><span style="color:var(--muted);font-size:0.82rem">No one online yet...</span></div>
+        <div class="chat-area" id="chat-area"></div>
+        <div class="chat-input-row">
+          <input class="chat-input" id="chat-input" placeholder="Send a message to your study group..." onkeydown="if(event.key==='Enter')sendChat()"/>
+          <button class="chat-send" onclick="sendChat()">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Taunts Feed -->
+    <div class="taunt-feed">
+      <h3>😈 Taunt Feed</h3>
+      <div class="taunt-list" id="taunt-list"><div class="no-taunts">No taunts yet. Be the first to start trouble 😏</div></div>
+    </div>
+  </div>
+</div>
+
+<footer>💾 Progress saved in browser &nbsp;·&nbsp; 🔥 Powered by Firebase</footer>
+<div class="toast" id="toast"></div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, onValue, push, serverTimestamp, onDisconnect, remove }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC1wauYpMGQaLU7V6o9LZ-enfG-w6FzJfg",
+  authDomain: "s4page.firebaseapp.com",
+  databaseURL: "https://s4page-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "s4page",
+  storageBucket: "s4page.firebasestorage.app",
+  messagingSenderId: "236575279245",
+  appId: "1:236575279245:web:ca25ba3d6d803a46befac4"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const db = getDatabase(fbApp);
+
+// ── SUBJECTS ──────────────────────────────────────────────────────────────
+const SUBJECTS = {
+  "IMC":{color:"#7c3aed",exam:"2026-03-23",topics:["Intro to IMC, components and fundamental concepts and tools","Elements of the Promotional Mix & Role of IMC in Marketing","Advertising Management: Communication Process, Response Models, FCB Model, Social Consumer Response Journey","Advertising Campaign Development: Message Strategy, Source and Channel factors","Advertising Creativity, DAGMAR, Creative Appreciation and Evaluation Workshop, Advertising Organization","Brand Pyramid, Keller's Brand Resonance Model, Kapferer's Brand Identity Prism","Development of Creative Brief, Consumer Insight, Copy Testing and Measurement, Y&R Model","Sales Promotion — planning and evaluation","PR and Publicity — PR campaign planning","New theories in New Media — Experiential Marketing, Buzz Marketing, Viral Campaigns, AR","Media Strategies, Media Planning and Media Mix Modelling"]},
+  "International Marketing":{color:"#3b82f6",exam:"2026-03-25",topics:["International Marketing — concept, need and scope","International Marketing Environment and dynamics including competitive and cultural dynamics","Trade Distortions and Market Barriers, WTO and its implications for International Marketing","Multinational Market Regions and Market Groups","Foreign Market Entry Strategies, Strategic Alliances and Global Market Opportunities","Product Planning and Development, Global Product Adaptation & Branding Strategies","Country of Origin Effect and Global Brands, International Product Strategies, IPLC","Pricing for International Markets, Countertrade, Export Procedure, Terms of Payment, Transfer Pricing","Global Logistics and Channels of Distribution"]},
+  "Retail Marketing":{color:"#10b981",exam:"2026-03-29",topics:["Introduction to Retailing, Retail Theories","Retail Formats and Classification, E-retailing","Retail Marketing Mix, KPIs in Retail (GMROI, DPP etc.), Visual Merchandising","Retail Strategy, Category Management","Retail Store Operations and SCM, Branding and Private Labels","Rural Retailing, Global Retailing","Introduction to Luxury Marketing, Luxury Retail Experience, Supply Chain and Sustainability in Luxury Retail"]},
+  "Marketing Strategy":{color:"#f59e0b",exam:"2026-03-28",topics:["Marketing Strategy Overview — STPD","Growth Strategies","Ansoff Matrix and its application to marketing strategies","Portfolio Analysis — BCG Matrix, GE Matrix, 7S Framework","Marketing Mix Strategies (4Ps)","Warfare Strategies — Defensive and Offensive","Competitor Analysis","Market Entry Strategies","Strategies for Mature/Declining Markets, Revival Strategies, Blue Ocean Strategy"]}
+};
+
+const TAUNTS = [
+  "Still sleeping? 😴 I've done {n} topics already!",
+  "Caught you slacking 😂 Better start studying!",
+  "I'm at {pct}% and you're... well 👀",
+  "Tick tock ⏰ Exams in {days} days!",
+  "I finished {subj} already. You good? 😏",
+  "Friendly reminder: you exist 🙃",
+  "Last one done buys chai ☕",
+  "I can see you procrastinating from here 🔭"
+];
+
+const AVATAR_COLORS = ["#7c3aed","#3b82f6","#10b981","#f59e0b","#ef4444","#ec4899","#06b6d4","#84cc16"];
+
+let USERNAME = '', ROOM_CODE = '', myData = {};
+let timers = {};
+
+// ── STORAGE ───────────────────────────────────────────────────────────────
+function loadLocal(k,d){try{return JSON.parse(localStorage.getItem(k)??'null')??d;}catch{return d;}}
+function saveLocal(k,v){localStorage.setItem(k,JSON.stringify(v));}
+window.loadKV=loadLocal; window.saveKV=saveLocal;
+
+// expose globals
+window.ROOM_CODE='';
+window.SUBJECTS=SUBJECTS;
+
+// ── JOIN ROOM ─────────────────────────────────────────────────────────────
+window.joinRoom = function() {
+  const nameEl=document.getElementById('setup-name');
+  const roomEl=document.getElementById('setup-room');
+  const name=nameEl.value.trim();
+  const room=(roomEl.value.trim()||'s4mba2026').toLowerCase().replace(/\s+/g,'');
+  if(!name){nameEl.style.borderColor='#ef4444';nameEl.focus();return;}
+  USERNAME=name; ROOM_CODE=room; window.ROOM_CODE=room;
+  saveLocal('mba_username',name); saveLocal('mba_room',room);
+  document.getElementById('setup-screen').style.display='none';
+  document.getElementById('user-chip').textContent='👤 '+name;
+  document.getElementById('room-display').textContent=room;
+  myData=loadLocal('mba_tracker',{});
+  init();
+};
+
+// Auto-login if saved
+const savedName=loadLocal('mba_username','');
+const savedRoom=loadLocal('mba_room','');
+if(savedName){
+  document.getElementById('setup-name').value=savedName;
+  document.getElementById('setup-room').value=savedRoom;
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+function init(){
+  applyTheme(); buildCountdown(); buildPanels(); updateAll(); updateStreak();
+  checkReminder(); syncToFirebase(); listenLeaderboard(); listenChat();
+  listenTaunts(); setOnlinePresence();
+}
+
+// ── FIREBASE SYNC ─────────────────────────────────────────────────────────
+function getProgress(subj, d){
+  const topics=SUBJECTS[subj].topics;
+  const src=d||myData;
+  const done=topics.filter((_,i)=>(src[subj]?.[i]?.status||'Not Started')==='Done').length;
+  return {done,total:topics.length,pct:topics.length?done/topics.length:0};
+}
+function getOverallPct(d){
+  let t=0,dn=0;
+  for(const s of Object.keys(SUBJECTS)){const p=getProgress(s,d);t+=p.total;dn+=p.done;}
+  return t?Math.round(dn/t*100):0;
+}
+
+function syncToFirebase(){
+  if(!USERNAME||!ROOM_CODE)return;
+  const streakData=loadLocal('mba_streak',{days:0,last:''});
+  const today=new Date().toISOString().slice(0,10);
+  const subjProgress={};
+  for(const s of Object.keys(SUBJECTS)){const p=getProgress(s);subjProgress[s]=Math.round(p.pct*100);}
+  set(ref(db,`rooms/${ROOM_CODE}/users/${USERNAME}`),{
+    name:USERNAME,
+    overall:getOverallPct(),
+    subjects:subjProgress,
+    streak:streakData.days||0,
+    studiedToday:streakData.last===today,
+    lastSeen:Date.now()
+  });
+}
+
+// ── LEADERBOARD ───────────────────────────────────────────────────────────
+function listenLeaderboard(){
+  onValue(ref(db,`rooms/${ROOM_CODE}/users`),snap=>{
+    const users=snap.val()||{};
+    renderLeaderboard(users);
+    renderOnlineUsers(users);
+  });
+}
+
+function renderLeaderboard(users){
+  const sorted=Object.entries(users).sort((a,b)=>b[1].overall-a[1].overall);
+  const trophies=['🥇','🥈','🥉'];
+  const rankClass=['rank-1','rank-2','rank-3'];
+  const grid=document.getElementById('lb-grid');
+  if(sorted.length===0){grid.innerHTML='<div class="lb-loading">No one in this room yet. Share the code!</div>';return;}
+  grid.innerHTML=sorted.map(([uname,u],idx)=>{
+    const isMe=uname===USERNAME;
+    const avatarColor=AVATAR_COLORS[Math.abs(hashStr(uname))%AVATAR_COLORS.length];
+    const initials=uname.slice(0,2).toUpperCase();
+    const trophy=trophies[idx]||'';
+    const rc=rankClass[idx]||'';
+    const studiedToday=u.studiedToday?'<span style="color:#10b981;font-size:0.72rem">✅ studied today</span>':'<span style="color:var(--muted);font-size:0.72rem">💤 not yet today</span>';
+    const subjBars=Object.entries(SUBJECTS).map(([sname,sinfo])=>{
+      const pct=u.subjects?.[sname]||0;
+      return `<div class="lb-subj-row">
+        <div class="lb-subj-name">${sname}</div>
+        <div class="lb-subj-track"><div class="lb-subj-fill" style="width:${pct}%;background:${sinfo.color}"></div></div>
+        <div class="lb-subj-pct">${pct}%</div>
+      </div>`;
+    }).join('');
+    const tauntBtns=isMe?'<span style="font-size:0.75rem;color:var(--muted)">That\'s you 👋</span>':
+      `<button class="taunt-btn" onclick="sendTaunt('${uname}')">😈 Taunt</button>
+       <button class="study-together-btn" onclick="sendStudyInvite('${uname}')">🤝 Study Together</button>`;
+    return `<div class="lb-card ${rc} ${isMe?'is-me':''}">
+      <div class="lb-top">
+        <div class="lb-name">
+          <div class="lb-avatar" style="background:${avatarColor}">${initials}</div>
+          <div>
+            <div class="lb-username">${uname}${isMe?' <span style="font-size:0.72rem;color:#7c3aed">(you)</span>':''}</div>
+            <div class="lb-streak-info">🔥 ${u.streak||0} day streak &nbsp;·&nbsp; ${studiedToday}</div>
+          </div>
+        </div>
+        <div class="lb-right">
+          <div style="text-align:center">
+            <div class="lb-overall">${u.overall||0}%</div>
+            <div class="lb-overall-label">overall</div>
+          </div>
+          <div class="lb-trophy">${trophy}</div>
+        </div>
+      </div>
+      <div class="lb-subj-bars">${subjBars}</div>
+      <div class="lb-actions">${tauntBtns}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderOnlineUsers(users){
+  const now=Date.now();
+  const online=Object.entries(users).filter(([,u])=>now-(u.lastSeen||0)<120000);
+  const el=document.getElementById('online-users');
+  if(online.length===0){el.innerHTML='<span style="color:var(--muted);font-size:0.82rem">No one online yet...</span>';return;}
+  el.innerHTML=online.map(([uname])=>`
+    <div class="online-chip">
+      <div class="online-dot"></div>
+      <span>${uname}${uname===USERNAME?' (you)':''}</span>
+    </div>`).join('');
+}
+
+// ── CHAT ──────────────────────────────────────────────────────────────────
+function listenChat(){
+  onValue(ref(db,`rooms/${ROOM_CODE}/chat`),snap=>{
+    const msgs=snap.val()||{};
+    const area=document.getElementById('chat-area');
+    const sorted=Object.values(msgs).sort((a,b)=>(a.ts||0)-(b.ts||0)).slice(-50);
+    area.innerHTML=sorted.map(m=>{
+      if(m.system) return `<div class="chat-msg system">${m.text}</div>`;
+      const isMe=m.from===USERNAME;
+      const t=m.ts?new Date(m.ts).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}):'';
+      return `<div class="chat-msg"><span class="cm-name${isMe?' me':''}">${m.from}</span><span class="cm-time">${t}</span>: ${escHtml(m.text)}</div>`;
+    }).join('');
+    area.scrollTop=area.scrollHeight;
+  });
+}
+
+window.sendChat=function(){
+  const el=document.getElementById('chat-input');
+  const text=el.value.trim();
+  if(!text||!USERNAME)return;
+  push(ref(db,`rooms/${ROOM_CODE}/chat`),{from:USERNAME,text,ts:Date.now()});
+  el.value='';
+};
+
+// ── TAUNTS ────────────────────────────────────────────────────────────────
+function listenTaunts(){
+  onValue(ref(db,`rooms/${ROOM_CODE}/taunts`),snap=>{
+    const taunts=snap.val()||{};
+    const sorted=Object.values(taunts).sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,20);
+    const el=document.getElementById('taunt-list');
+    if(sorted.length===0){el.innerHTML='<div class="no-taunts">No taunts yet. Be the first to start trouble 😏</div>';return;}
+    el.innerHTML=sorted.map(t=>`
+      <div class="taunt-item">
+        <div><div class="taunt-text">${escHtml(t.msg)}</div><div class="taunt-from">from <strong>${t.from}</strong> → <strong>${t.to}</strong></div></div>
+        <div class="taunt-time">${t.ts?new Date(t.ts).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}):''}</div>
+      </div>`).join('');
+  });
+}
+
+window.sendTaunt=function(toUser){
+  const overall=getOverallPct();
+  const nextExam=getNextExam();
+  const randomSubj=Object.keys(SUBJECTS)[Math.floor(Math.random()*4)];
+  const template=TAUNTS[Math.floor(Math.random()*TAUNTS.length)];
+  const msg=template
+    .replace('{n}',myData?Object.values(myData).flatMap(s=>Object.values(s)).filter(t=>t.status==='Done').length:0)
+    .replace('{pct}',overall+'%')
+    .replace('{days}',nextExam)
+    .replace('{subj}',randomSubj);
+  push(ref(db,`rooms/${ROOM_CODE}/taunts`),{from:USERNAME,to:toUser,msg,ts:Date.now()});
+  showToast('😈 Taunt sent to '+toUser+'!');
+};
+
+window.sendStudyInvite=function(toUser){
+  push(ref(db,`rooms/${ROOM_CODE}/chat`),{from:USERNAME,text:`Hey ${toUser}! Let's study together 🤝 Join the chat!`,ts:Date.now()});
+  switchMainTab('leaderboard',null);
+  showToast('📩 Invite sent to '+toUser+'!');
+};
+
+// ── PRESENCE ─────────────────────────────────────────────────────────────
+function setOnlinePresence(){
+  if(!USERNAME||!ROOM_CODE)return;
+  const presRef=ref(db,`rooms/${ROOM_CODE}/users/${USERNAME}/lastSeen`);
+  set(presRef,Date.now());
+  onDisconnect(presRef).remove();
+  setInterval(()=>set(presRef,Date.now()),30000);
+}
+
+// ── COPY ROOM CODE ────────────────────────────────────────────────────────
+window.copyRoomCode=function(){
+  navigator.clipboard.writeText(ROOM_CODE).then(()=>showToast('📋 Room code copied: '+ROOM_CODE));
+};
+
+// ── HELPERS ───────────────────────────────────────────────────────────────
+function hashStr(s){let h=0;for(let i=0;i<s.length;i++)h=Math.imul(31,h)+s.charCodeAt(i)|0;return h;}
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function getNextExam(){
+  const now=new Date();now.setHours(0,0,0,0);
+  let min=999;
+  for(const info of Object.values(SUBJECTS)){const d=new Date(info.exam);d.setHours(0,0,0,0);const diff=Math.round((d-now)/86400000);if(diff>=0&&diff<min)min=diff;}
+  return min===999?'soon':min;
+}
+
+// ── DARK MODE ─────────────────────────────────────────────────────────────
+window.toggleDark=function(){
+  const dark=document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme',dark?'light':'dark');
+  document.getElementById('dark-btn').textContent=dark?'🌙':'☀️';
+  saveLocal('mba_theme',dark?'light':'dark');
+};
+function applyTheme(){
+  const t=loadLocal('mba_theme','light');
+  document.documentElement.setAttribute('data-theme',t);
+  document.getElementById('dark-btn').textContent=t==='dark'?'☀️':'🌙';
+}
+
+// ── STREAK ────────────────────────────────────────────────────────────────
+function updateStreak(){
+  const today=new Date().toISOString().slice(0,10);
+  const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);
+  let s=loadLocal('mba_streak',{days:0,last:''});
+  if(s.last===today){}
+  else if(s.last===yesterday){s.days++;s.last=today;saveLocal('mba_streak',s);}
+  else{s.days=1;s.last=today;saveLocal('mba_streak',s);}
+  document.getElementById('streak-num').textContent=s.days+'🔥';
+}
+
+// ── NOTIFICATIONS ─────────────────────────────────────────────────────────
+window.requestNotification=function(){
+  if(!('Notification' in window)){showToast('Not supported');return;}
+  Notification.requestPermission().then(p=>{
+    if(p==='granted'){showToast('🔔 Daily reminders enabled!');saveLocal('mba_notif',true);}
+    else showToast('Permission denied');
+  });
+};
+function checkReminder(){
+  const last=loadLocal('mba_last_visit',0);
+  if(Date.now()-last>20*3600000&&typeof Notification!=='undefined'&&Notification.permission==='granted')
+    new Notification('📚 Time to study!',{body:'Your MBA exams are coming. Check your tracker!'});
+  saveLocal('mba_last_visit',Date.now());
+}
+
+// ── COUNTDOWN ─────────────────────────────────────────────────────────────
+function buildCountdown(){
+  const now=new Date();now.setHours(0,0,0,0);
+  document.getElementById('countdown').innerHTML=Object.entries(SUBJECTS).map(([name,info])=>{
+    const exam=new Date(info.exam);exam.setHours(0,0,0,0);
+    const diff=Math.round((exam-now)/86400000);
+    return `<div class="countdown-card${diff<=2&&diff>=0?' urgent':''}" style="--c:${info.color}">
+      <div><div class="cd-subj">${name}</div><div class="cd-date">${exam.toLocaleDateString('en-IN',{day:'numeric',month:'short'})}</div></div>
+      <div style="text-align:center"><div class="cd-days">${diff<0?'✓':diff===0?'🎯':diff}</div><div class="cd-days-label">${diff<0?'done':diff===0?'TODAY':'days left'}</div></div>
+    </div>`;
+  }).join('');
+}
+
+// ── STATS ROW ─────────────────────────────────────────────────────────────
+function buildStatsRow(){
+  let total=0,done=0,inprog=0,high=0;
+  for(const[subj,info]of Object.entries(SUBJECTS)){
+    info.topics.forEach((_,i)=>{
+      total++;const s=myData[subj]?.[i]?.status||'Not Started',p=myData[subj]?.[i]?.priority||'';
+      if(s==='Done')done++;if(s==='In Progress')inprog++;if(p==='High')high++;
+    });
+  }
+  document.getElementById('stats-row').innerHTML=`
+    <div class="stat-box"><div class="sb-val">${total}</div><div class="sb-label">Total Topics</div></div>
+    <div class="stat-box"><div class="sb-val" style="color:#10b981">${done}</div><div class="sb-label">Completed ✅</div></div>
+    <div class="stat-box"><div class="sb-val" style="color:#f59e0b">${inprog}</div><div class="sb-label">In Progress 🔄</div></div>
+    <div class="stat-box"><div class="sb-val" style="color:#ef4444">${high}</div><div class="sb-label">High Priority 🔴</div></div>
+    <div class="stat-box"><div class="sb-val" style="color:#6b7280">${total-done}</div><div class="sb-label">Remaining ⏳</div></div>`;
+}
+
+// ── UPDATE ALL ────────────────────────────────────────────────────────────
+function updateAll(){
+  document.getElementById('overall-pct').textContent=getOverallPct()+'%';
+  buildStatsRow();
+  document.getElementById('cards').innerHTML=Object.entries(SUBJECTS).map(([name,info])=>{
+    const p=getProgress(name),pct=Math.round(p.pct*100);
+    const examStr=new Date(info.exam).toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+    return `<div class="card" style="--c:${info.color}" onclick="switchTopicTab('${name}');switchMainTab('tracker',null)">
+      <div class="c-title">${name}</div>
+      <div class="c-count">${p.done}<span style="font-size:.85rem;font-weight:400;color:var(--muted)"> / ${p.total}</span></div>
+      <div class="c-sub">Topics completed</div><div class="c-exam">📅 ${examStr}</div>
+      <div class="bar-bg"><div class="bar-fg" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+  document.getElementById('chart').innerHTML=Object.entries(SUBJECTS).map(([name,info])=>{
+    const p=getProgress(name),pct=Math.round(p.pct*100);
+    return `<div class="chart-row">
+      <div class="chart-label">${name}</div>
+      <div class="chart-track"><div class="chart-fill" style="width:${pct}%;background:${info.color}">${pct>8?`<span>${pct}%</span>`:''}</div></div>
+      <div class="chart-num">${p.done}/${p.total}</div>
+    </div>`;
+  }).join('');
+  for(const[name]of Object.entries(SUBJECTS)){
+    const k=name.replace(/\s+/g,'_'),p=getProgress(name);
+    const el=document.getElementById(`stat-${k}`);
+    if(el)el.innerHTML=`<span>${p.done} / ${p.total}</span> topics done`;
+    SUBJECTS[name].topics.forEach((_,i)=>{
+      const tr=document.getElementById(`row-${k}-${i}`),sel=document.getElementById(`sel-${k}-${i}`);
+      if(!tr||!sel)return;
+      const s=myData[name]?.[i]?.status||'Not Started';
+      tr.className=s==='Done'?'done':'';
+      sel.className='status-sel'+(s==='Done'?' done':s==='In Progress'?' inprogress':'');
+    });
+  }
+  syncToFirebase();
+}
+
+// ── BUILD PANELS ──────────────────────────────────────────────────────────
+function buildPanels(){
+  const tabsEl=document.getElementById('tabs'),panelsEl=document.getElementById('panels');
+  let first=true;
+  for(const[name,info]of Object.entries(SUBJECTS)){
+    const k=name.replace(/\s+/g,'_');
+    const tab=document.createElement('div');
+    tab.className='tab'+(first?' active':'');tab.style.setProperty('--c',info.color);
+    tab.textContent=name;tab.dataset.subject=name;tab.onclick=()=>switchTopicTab(name);
+    tabsEl.appendChild(tab);
+    const rows=info.topics.map((topic,i)=>{
+      const status=myData[name]?.[i]?.status||'Not Started';
+      const note=(myData[name]?.[i]?.note||'').replace(/"/g,'&quot;');
+      const priority=myData[name]?.[i]?.priority||'';
+      const timerSec=myData[name]?.[i]?.timerSec||0;
+      const pc=priority.toLowerCase();
+      return `<tr id="row-${k}-${i}" class="${status==='Done'?'done':''}">
+        <td class="td-num">${i+1}</td>
+        <td class="topic-name">${topic}</td>
+        <td><select class="status-sel${status==='Done'?' done':status==='In Progress'?' inprogress':''}" id="sel-${k}-${i}" onchange="updateStatus('${name}',${i},this.value)">
+          <option ${status==='Not Started'?'selected':''}>Not Started</option>
+          <option ${status==='In Progress'?'selected':''}>In Progress</option>
+          <option ${status==='Done'?'selected':''}>Done</option>
+        </select></td>
+        <td><select class="priority-sel${pc?' '+pc:''}" id="prio-${k}-${i}" onchange="updatePriority('${name}',${i},this.value)">
+          <option value="" ${!priority?'selected':''}>— Priority</option>
+          <option value="High" ${priority==='High'?'selected':''}>🔴 High</option>
+          <option value="Medium" ${priority==='Medium'?'selected':''}>🟡 Medium</option>
+          <option value="Low" ${priority==='Low'?'selected':''}>🟢 Low</option>
+        </select></td>
+        <td><div class="timer-wrap">
+          <span class="timer-display" id="timer-${k}-${i}">${fmt(timerSec)}</span>
+          <button class="timer-btn" id="tbtn-${k}-${i}" onclick="toggleTimer('${name}',${i})">▶</button>
+          <button class="timer-btn" onclick="resetTimer('${name}',${i})">↺</button>
+        </div></td>
+        <td><input class="note-input" type="text" placeholder="Note..." value="${note}" oninput="updateNote('${name}',${i},this.value)"/></td>
+      </tr>`;
+    }).join('');
+    const panel=document.createElement('div');
+    panel.className='subject-panel'+(first?' active':'');
+    panel.id=`panel-${k}`;panel.style.setProperty('--c',info.color);
+    panel.innerHTML=`<div class="panel-header">
+      <div><h2>${name}</h2><div class="panel-stats" id="stat-${k}">0 / ${info.topics.length} topics done</div></div>
+      <div class="actions">
+        <button class="btn-sm btn-done" onclick="markAll('${name}','Done')">✅ All Done</button>
+        <button class="btn-sm btn-reset" onclick="markAll('${name}','Not Started')">↩ Reset</button>
+      </div></div>
+    <table><thead><tr>
+      <th class="th-num">#</th><th>Topic</th><th class="th-status">Status</th>
+      <th class="th-priority">Priority</th><th class="th-timer">⏱ Timer</th><th class="th-notes">Notes</th>
+    </tr></thead><tbody>${rows}</tbody></table>`;
+    panelsEl.appendChild(panel);first=false;
   }
 }
 
-function switchTab(name) {
-  const key = name.replace(/\s+/g, '_');
-  document.querySelectorAll('.tab').forEach(t => {
-    t.classList.toggle('active', t.dataset.subject === name);
-    const info = SUBJECTS[t.dataset.subject];
-    t.style.setProperty('--c', info.color);
+// ── INTERACTIONS ──────────────────────────────────────────────────────────
+window.switchTopicTab=function(name){
+  const k=name.replace(/\s+/g,'_');
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.classList.toggle('active',t.dataset.subject===name);
+    t.style.setProperty('--c',SUBJECTS[t.dataset.subject].color);
   });
-  document.querySelectorAll('.subject-panel').forEach(p => {
-    p.classList.toggle('active', p.id === `panel-${key}`);
+  document.querySelectorAll('.subject-panel').forEach(p=>p.classList.toggle('active',p.id===`panel-${k}`));
+};
+
+window.switchMainTab=function(view,btn){
+  document.querySelectorAll('.main-view').forEach(v=>v.classList.toggle('active',v.id==='view-'+view));
+  document.querySelectorAll('.main-tab').forEach(t=>t.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  else document.querySelectorAll('.main-tab').forEach(t=>{if(t.textContent.toLowerCase().includes(view==='tracker'?'tracker':'leader'))t.classList.add('active');});
+};
+
+window.updateStatus=function(subj,idx,value){
+  if(!myData[subj])myData[subj]={};if(!myData[subj][idx])myData[subj][idx]={};
+  myData[subj][idx].status=value;
+  if(value==='Done'){updateStreak();showToast('✅ Topic done!');}
+  saveLocal('mba_tracker',myData);updateAll();
+};
+window.updatePriority=function(subj,idx,value){
+  if(!myData[subj])myData[subj]={};if(!myData[subj][idx])myData[subj][idx]={};
+  myData[subj][idx].priority=value;
+  const sel=document.getElementById(`prio-${subj.replace(/\s+/g,'_')}-${idx}`);
+  if(sel)sel.className='priority-sel'+(value?' '+value.toLowerCase():'');
+  saveLocal('mba_tracker',myData);buildStatsRow();syncToFirebase();
+};
+window.updateNote=function(subj,idx,value){
+  if(!myData[subj])myData[subj]={};if(!myData[subj][idx])myData[subj][idx]={};
+  myData[subj][idx].note=value;saveLocal('mba_tracker',myData);
+};
+window.markAll=function(subj,status){
+  if(!myData[subj])myData[subj]={};
+  SUBJECTS[subj].topics.forEach((_,i)=>{
+    if(!myData[subj][i])myData[subj][i]={};myData[subj][i].status=status;
+    const sel=document.getElementById(`sel-${subj.replace(/\s+/g,'_')}-${i}`);if(sel)sel.value=status;
   });
+  saveLocal('mba_tracker',myData);updateAll();
+  showToast(status==='Done'?'✅ All topics done!':'↩ Subject reset');
+};
+
+// ── TIMER ─────────────────────────────────────────────────────────────────
+function fmt(sec){const m=Math.floor(sec/60),s=sec%60;return`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;}
+window.toggleTimer=function(subj,idx){
+  const key=`${subj}||${idx}`,k=subj.replace(/\s+/g,'_');
+  if(!timers[key])timers[key]={elapsed:myData[subj]?.[idx]?.timerSec||0,running:false,interval:null};
+  const t=timers[key];
+  if(t.running){
+    clearInterval(t.interval);t.running=false;
+    if(!myData[subj])myData[subj]={};if(!myData[subj][idx])myData[subj][idx]={};
+    myData[subj][idx].timerSec=t.elapsed;saveLocal('mba_tracker',myData);
+  }else{t.running=true;t.interval=setInterval(()=>{t.elapsed++;refreshTimer(k,idx,t);},1000);}
+  refreshTimer(k,idx,t);
+};
+window.resetTimer=function(subj,idx){
+  const key=`${subj}||${idx}`,k=subj.replace(/\s+/g,'_');
+  if(timers[key]){clearInterval(timers[key].interval);delete timers[key];}
+  if(myData[subj]?.[idx])myData[subj][idx].timerSec=0;saveLocal('mba_tracker',myData);
+  const d=document.getElementById(`timer-${k}-${idx}`),b=document.getElementById(`tbtn-${k}-${idx}`);
+  if(d){d.textContent='00:00';d.className='timer-display';}if(b)b.textContent='▶';
+};
+function refreshTimer(k,idx,t){
+  const d=document.getElementById(`timer-${k}-${idx}`),b=document.getElementById(`tbtn-${k}-${idx}`);
+  if(d){d.textContent=fmt(t.elapsed);d.className='timer-display'+(t.running?' running':'');}
+  if(b)b.textContent=t.running?'⏸':'▶';
 }
 
-function updateStatus(subj, idx, value) {
-  if (!data[subj]) data[subj] = {};
-  if (!data[subj][idx]) data[subj][idx] = {};
-  data[subj][idx].status = value;
-  saveData(data);
-  updateAll();
-}
+// ── TOAST ─────────────────────────────────────────────────────────────────
+let toastT;
+window.showToast=function(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2600);
+};
 
-function updateNote(subj, idx, value) {
-  if (!data[subj]) data[subj] = {};
-  if (!data[subj][idx]) data[subj][idx] = {};
-  data[subj][idx].note = value;
-  saveData(data);
-}
-
-function markAll(subj, status) {
-  if (!data[subj]) data[subj] = {};
-  SUBJECTS[subj].topics.forEach((_, i) => {
-    if (!data[subj][i]) data[subj][i] = {};
-    data[subj][i].status = status;
-    const sel = document.getElementById(`sel-${subj.replace(/\s+/g,'_')}-${i}`);
-    if (sel) sel.value = status;
-  });
-  saveData(data);
-  updateAll();
-}
-
-buildPanels();
-updateAll();
+// ── AUTO LOGIN ────────────────────────────────────────────────────────────
+if(savedName){setTimeout(()=>document.getElementById('setup-btn-auto')?.click(),100);}
 </script>
 </body>
 </html>
