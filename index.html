@@ -363,8 +363,57 @@ input.note-in:focus{border-color:var(--accent);}
 .qb-topic-meta{font-size:0.72rem;color:var(--muted);}
 .qb-filter-btn{padding:4px 12px;border-radius:99px;border:1px solid var(--border);background:none;color:var(--muted);font-size:0.74rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;}
 .qb-filter-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(124,58,237,.07);}
-.toast{position:fixed;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 10px);left:50%;transform:translateX(-50%) translateY(60px);background:var(--text);color:var(--bg);padding:9px 14px 9px 18px;border-radius:10px;font-size:0.82rem;font-weight:600;z-index:9999;transition:transform .3s;pointer-events:auto;white-space:nowrap;display:flex;align-items:center;gap:10px;}
-.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* ── POMODORO ── */
+.pomo-pill{position:fixed;top:14px;right:14px;z-index:100;background:#1c1c1e;border-radius:99px;padding:5px 13px 5px 10px;display:flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,0.2);transition:transform .15s;}
+.pomo-pill:hover{transform:scale(1.04);}
+.pomo-pill-emoji{font-size:13px;line-height:1;}
+.pomo-pill-time{font-size:11px;font-weight:800;color:#fcb045;font-variant-numeric:tabular-nums;}
+.pomo-pill-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;flex-shrink:0;display:none;}
+.pomo-pill-dot.on{display:block;animation:pulse 2s infinite;}
+.pomo-card{position:fixed;top:50px;right:12px;z-index:99;width:168px;background:#1c1c1e;border-radius:18px;padding:15px 13px 12px;border:1px solid #2a2a2e;box-shadow:0 8px 32px rgba(0,0,0,0.35);pointer-events:none;opacity:0;transform:translateY(-6px) scale(.97);transition:opacity .2s,transform .2s;}
+.pomo-card.open{pointer-events:all;opacity:1;transform:translateY(0) scale(1);}
+.pomo-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.pomo-phase-lbl{font-size:9px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.08em;}
+.pomo-toggle-btn{background:#2a2a2e;border:none;border-radius:7px;padding:3px 8px;font-size:8px;color:#888;cursor:pointer;}
+.pomo-toggle-btn:hover{background:#3a3a3e;color:#fff;}
+.pomo-anim-wrap{display:flex;justify-content:center;align-items:flex-end;height:68px;margin:4px 0 2px;position:relative;}
+.candle-scene{display:flex;flex-direction:column;align-items:center;position:relative;}
+.flame-container{position:relative;width:22px;height:30px;}
+.flame-main{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:13px;height:24px;background:#fcb045;border-radius:50% 50% 30% 30% / 55% 55% 45% 45%;transform-origin:50% 100%;animation:ff 1.3s ease-in-out infinite alternate;}
+.flame-core{position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:6px;height:12px;background:#fff5b0;border-radius:50% 50% 30% 30% / 55% 55% 45% 45%;}
+@keyframes ff{
+  0%{transform:translateX(-50%) scaleX(1) scaleY(1) rotate(-1deg);}
+  25%{transform:translateX(-50%) scaleX(.88) scaleY(1.06) rotate(1.5deg);}
+  50%{transform:translateX(-50%) scaleX(1.07) scaleY(.95) rotate(-.5deg);}
+  75%{transform:translateX(-50%) scaleX(.93) scaleY(1.04) rotate(1.2deg);}
+  100%{transform:translateX(-50%) scaleX(1.02) scaleY(.98) rotate(-1deg);}
+}
+.wick-el{width:2px;height:5px;background:#555;margin:0 auto;border-radius:1px;}
+.candle-body-el{width:24px;background:#e8d5a3;border-radius:3px 3px 2px 2px;position:relative;overflow:hidden;transition:height 1s linear;}
+.candle-drip{position:absolute;top:-1px;left:3px;width:5px;height:7px;background:#d4b97a;border-radius:0 0 50% 50%;}
+.candle-drip2{position:absolute;top:-1px;right:4px;width:4px;height:5px;background:#c9a96e;border-radius:0 0 50% 50%;}
+.candle-base-el{width:30px;height:5px;background:#c9a96e;border-radius:0 0 4px 4px;margin:0 auto;}
+.smoke-wrap{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);width:20px;pointer-events:none;display:none;}
+.smoke-p{width:7px;height:7px;background:rgba(160,160,160,.55);border-radius:50%;position:absolute;bottom:0;}
+@keyframes smokeRise{0%{transform:translateX(0) scale(1);opacity:.6;}100%{transform:translateX(var(--dx,0px)) translateY(-40px) scale(3);opacity:0;}}
+.hg-scene{display:flex;justify-content:center;align-items:center;width:100%;}
+.pomo-time-display{font-size:26px;font-weight:900;color:#fff;text-align:center;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1;margin:4px 0 2px;}
+.pomo-phase-sub{font-size:8px;color:#555;text-align:center;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;}
+.pomo-ctrl-row{display:flex;justify-content:center;gap:7px;}
+.pomo-ctrl{background:#2a2a2e;border:none;border-radius:9px;width:34px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#ccc;font-size:12px;transition:background .15s;}
+.pomo-ctrl:hover{background:#3a3a3e;color:#fff;}
+.pomo-ctrl.play{background:rgba(252,176,69,.15);color:#fcb045;width:42px;}
+.pomo-ctrl.play:hover{background:rgba(252,176,69,.28);}
+.pomo-prog-track{height:2px;background:#2a2a2e;border-radius:99px;overflow:hidden;margin-top:10px;}
+.pomo-prog-fill{height:100%;background:linear-gradient(90deg,#fcb045,#fd1d1d);border-radius:99px;transition:width .9s linear;}
+.pomo-blackout{position:fixed;inset:0;background:#000;z-index:9990;opacity:0;pointer-events:none;transition:opacity 1.2s;}
+.pomo-blackout.on{opacity:1;pointer-events:all;}
+.break-color{color:#60a5fa !important;}
+.break-prog{background:linear-gradient(90deg,#60a5fa,#818cf8) !important;}
+
+.toast{position:fixed;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 10px);left:50%;transform:translateX(-50%) translateY(80px);background:var(--text);color:var(--bg);padding:9px 14px 9px 18px;border-radius:10px;font-size:0.82rem;font-weight:600;z-index:9999;transition:transform .3s,opacity .3s;pointer-events:none;white-space:nowrap;display:flex;align-items:center;gap:10px;opacity:0;}
+.toast.show{transform:translateX(-50%) translateY(0);pointer-events:auto;opacity:1;}
 .toast.error{background:#dc2626;color:white;}
 .toast-close{background:none;border:none;color:inherit;cursor:pointer;font-size:1rem;opacity:.7;padding:0;line-height:1;flex-shrink:0;}
 .toast-close:hover{opacity:1;}
@@ -535,45 +584,62 @@ input.note-in:focus{border-color:var(--accent);}
   <div class="app-view" id="view-papers">
     <!-- Upload -->
     <div class="qb-upload-card">
-      <div class="qb-upload-header">
-        <div>
-          <div class="qb-upload-title">Upload Question Paper</div>
-          <div class="qb-upload-sub">PDF or image · Shared with your room · Duplicates auto-rejected</div>
-        </div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-        <input class="qb-input" id="qb-year" placeholder="Year (e.g. 2023-24)"/>
-        <input class="qb-input" id="qb-exam" placeholder="Exam (e.g. End Term)"/>
-      </div>
-      <div class="upload-zone" id="qb-upload-zone" style="padding:16px;"
+      <div class="qb-upload-title">Import Questions via CSV</div>
+      <div class="qb-upload-sub">Upload a CSV file with your questions · Shared with your room · Duplicates auto-skipped</div>
+      <div class="upload-zone" id="qb-upload-zone" style="padding:16px;margin-bottom:10px;"
         ondragover="event.preventDefault();this.classList.add('drag')"
         ondragleave="this.classList.remove('drag')"
-        ondrop="handleQBDrop(event)" onclick="document.getElementById('qb-file-inp').click()">
-        <div class="uz-icon" style="font-size:1.4rem;">📎</div>
-        <div class="uz-title" style="font-size:0.84rem;">Tap to upload or drag & drop</div>
-        <div class="uz-sub">PDF or image · Max 10MB</div>
-        <input type="file" id="qb-file-inp" accept=".pdf,.jpg,.jpeg,.png" style="display:none"
-          onchange="uploadQBPaper(this.files[0])"/>
+        ondrop="handleCSVDrop(event)" onclick="document.getElementById('qb-csv-inp').click()">
+        <div class="uz-icon" style="font-size:1.4rem;">📊</div>
+        <div class="uz-title" style="font-size:0.84rem;">Tap to upload CSV or drag & drop</div>
+        <div class="uz-sub">Columns: question, subject, topic, month_year, exam</div>
+        <input type="file" id="qb-csv-inp" accept=".csv" style="display:none"
+          onchange="importCSV(this.files[0])"/>
       </div>
       <div class="upload-prog" id="qb-upload-prog"><div class="upload-prog-fill" id="qb-upload-fill"></div></div>
+      <div id="qb-import-result" style="display:none;margin-top:10px;font-size:0.82rem;padding:10px 12px;border-radius:8px;background:var(--done-bg);color:var(--done-text);font-weight:600;"></div>
+      <!-- CSV format reminder -->
+      <details style="margin-top:12px;">
+        <summary style="font-size:0.76rem;color:var(--muted);cursor:pointer;font-weight:600;">View CSV format</summary>
+        <div style="margin-top:8px;background:var(--card2);border-radius:8px;padding:10px;font-size:0.72rem;color:var(--muted);font-family:monospace;overflow-x:auto;white-space:nowrap;line-height:1.8;">
+          question,subject,topic,month_year,exam<br>
+          "What is the FCB Model?",IMC,Advertising Management...,November 2023,End Term<br>
+          "Explain Blue Ocean Strategy",Marketing Strategy,Strategies for...,April 2024,Supplementary 1
+        </div>
+      </details>
     </div>
 
     <!-- View tabs -->
     <div class="subj-tabs" id="qb-view-tabs" style="margin-top:16px;">
-      <button class="stab active" onclick="switchQBView('papers',this)">Papers</button>
-      <button class="stab" onclick="switchQBView('questions',this)">Questions</button>
+      <button class="stab active" onclick="switchQBView('questions',this)">Questions</button>
       <button class="stab" onclick="switchQBView('topics',this)">By Topic</button>
     </div>
 
-    <!-- Papers list -->
-    <div id="qb-view-papers" style="padding-top:14px;">
-      <div id="qb-papers-list"><div class="no-content">No papers uploaded yet</div></div>
+    <!-- Subject filter tabs (shared across all views) -->
+    <div class="subj-tabs" id="qb-subj-tabs" style="background:var(--card2);border-bottom:1px solid var(--border);">
+      <button class="stab active" id="qbsf-All" onclick="setQBSubjFilter('All',this)">All</button>
+      <button class="stab" id="qbsf-IMC" onclick="setQBSubjFilter('IMC',this)">IMC</button>
+      <button class="stab" id="qbsf-IM" onclick="setQBSubjFilter('International Marketing',this)">Intl Mktg</button>
+      <button class="stab" id="qbsf-Retail" onclick="setQBSubjFilter('Retail Marketing',this)">Retail</button>
+      <button class="stab" id="qbsf-Strategy" onclick="setQBSubjFilter('Marketing Strategy',this)">Strategy</button>
+    </div>
+    <!-- Subject filter tabs (shared across all views) -->
+    <div style="display:flex;gap:0;overflow-x:auto;border-bottom:1px solid var(--border);margin-bottom:0;" id="qb-subj-tabs">
+      <button class="stab active" style="font-size:0.74rem;padding:7px 14px;" onclick="setQBSubjTab('All',this)">All</button>
+      <button class="stab" style="font-size:0.74rem;padding:7px 14px;" onclick="setQBSubjTab('IMC',this)">IMC</button>
+      <button class="stab" style="font-size:0.74rem;padding:7px 14px;" onclick="setQBSubjTab('International Marketing',this)">Intl Mktg</button>
+      <button class="stab" style="font-size:0.74rem;padding:7px 14px;" onclick="setQBSubjTab('Retail Marketing',this)">Retail</button>
+      <button class="stab" style="font-size:0.74rem;padding:7px 14px;" onclick="setQBSubjTab('Marketing Strategy',this)">Strategy</button>
+    </div>
+
+    <!-- Papers list (hidden - no longer used) -->
+    <div id="qb-view-papers" style="display:none;">
+      <div id="qb-papers-list"></div>
     </div>
 
     <!-- Questions list -->
-    <div id="qb-view-questions" style="display:none;padding-top:14px;">
-      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;" id="qb-subj-filter"></div>
-      <div id="qb-questions-list"><div class="no-content">No questions extracted yet</div></div>
+    <div id="qb-view-questions" style="padding-top:14px;">
+      <div id="qb-questions-list"><div class="no-content">No questions yet — import a CSV above!</div></div>
     </div>
 
     <!-- By topic -->
@@ -649,7 +715,66 @@ input.note-in:focus{border-color:var(--accent);}
   <div class="fv-body" id="fv-body"></div>
 </div>
 
-<div class="toast" id="toast"><span id="toast-msg"></span><button class="toast-close" id="toast-close" onclick="hideToast()">✕</button></div>
+<!-- POMODORO PILL -->
+<div class="pomo-pill" id="pomo-pill" onclick="togglePomoCard()">
+  <span class="pomo-pill-emoji" id="pomo-pill-emoji">🕯️</span>
+  <span class="pomo-pill-time" id="pomo-pill-time">25:00</span>
+  <div class="pomo-pill-dot" id="pomo-pill-dot"></div>
+</div>
+
+<!-- POMODORO CARD -->
+<div class="pomo-card" id="pomo-card">
+  <div class="pomo-card-top">
+    <span class="pomo-phase-lbl" id="pomo-phase-lbl">Focus</span>
+    <button class="pomo-toggle-btn" id="pomo-toggle-btn" onclick="togglePomoMode()">⏳ Hourglass</button>
+  </div>
+  <div class="pomo-anim-wrap" id="pomo-anim-wrap">
+    <!-- Candle (default) -->
+    <div class="candle-scene" id="pomo-candle">
+      <div class="flame-container" id="pomo-flame-wrap">
+        <div class="flame-main" id="pomo-flame"></div>
+        <div class="flame-core"></div>
+        <div class="smoke-wrap" id="pomo-smoke"></div>
+      </div>
+      <div class="wick-el"></div>
+      <div class="candle-body-el" id="pomo-candle-body" style="height:40px;">
+        <div class="candle-drip"></div>
+        <div class="candle-drip2"></div>
+      </div>
+      <div class="candle-base-el"></div>
+    </div>
+    <!-- Hourglass (hidden) -->
+    <div class="hg-scene" id="pomo-hourglass" style="display:none;">
+      <svg id="pomo-hg-svg" viewBox="0 0 44 60" width="44" height="60" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="0" width="40" height="5" rx="2.5" fill="#444"/>
+        <rect x="2" y="55" width="40" height="5" rx="2.5" fill="#444"/>
+        <path d="M4,4 L40,4 L24,30 L20,30 Z" fill="#222" stroke="#444" stroke-width="1"/>
+        <path d="M20,30 L24,30 L40,56 L4,56 Z" fill="#222" stroke="#444" stroke-width="1"/>
+        <clipPath id="hgt"><path d="M4,4 L40,4 L24,30 L20,30 Z"/></clipPath>
+        <clipPath id="hgb"><path d="M20,30 L24,30 L40,56 L4,56 Z"/></clipPath>
+        <rect id="hg-top-sand" x="0" y="4" width="44" height="26" fill="#fcb045" clip-path="url(#hgt)" opacity=".9"/>
+        <rect id="hg-bot-sand" x="0" y="44" width="44" height="12" fill="#fcb045" clip-path="url(#hgb)" opacity=".9"/>
+        <rect id="hg-grain" x="21" y="29" width="2" height="6" rx="1" fill="#fcb045" opacity=".7">
+          <animate attributeName="y" values="28;34;28" dur="0.5s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.7;0;0.7" dur="0.5s" repeatCount="indefinite"/>
+        </rect>
+      </svg>
+    </div>
+  </div>
+  <div class="pomo-time-display" id="pomo-time-big">25:00</div>
+  <div class="pomo-phase-sub" id="pomo-phase-sub">Focus Session</div>
+  <div class="pomo-ctrl-row">
+    <button class="pomo-ctrl" onclick="resetPomo()" title="Reset">↺</button>
+    <button class="pomo-ctrl play" id="pomo-play-btn" onclick="togglePomo()">▶</button>
+    <button class="pomo-ctrl" onclick="togglePomoCard()" title="Close">✕</button>
+  </div>
+  <div class="pomo-prog-track"><div class="pomo-prog-fill" id="pomo-prog-fill" style="width:0%"></div></div>
+</div>
+
+<!-- BLACKOUT -->
+<div class="pomo-blackout" id="pomo-blackout"></div>
+
+<div class="toast" id="toast"><span id="toast-msg"></span><button class="toast-close" onclick="hideToast()">✕</button></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -1067,111 +1192,138 @@ window.showToast=(msg,isError=false,duration=2600)=>{
 // ── QUESTION BANK ──────────────────────────────────────────────────────────
 let qbSubjFilter='All', qbView='papers';
 
-async function sha256(str){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');}
-
-window.handleQBDrop=e=>{e.preventDefault();document.getElementById('qb-upload-zone').classList.remove('drag');const f=e.dataTransfer.files[0];if(f)uploadQBPaper(f);};
-
-window.uploadQBPaper=async file=>{
-  if(!file)return;
-  if(!ROOM_CODE){showToast('Join a room first',true);return;}
-  const year=document.getElementById('qb-year').value.trim();
-  const exam=document.getElementById('qb-exam').value.trim();
-  if(!year||!exam){showToast('Please enter year and exam name',true);return;}
-  if(file.size>10*1024*1024){showToast('❌ Max 10MB',true);return;}
-  const prog=document.getElementById('qb-upload-prog'),fill=document.getElementById('qb-upload-fill');
-  prog.style.display='block';fill.style.width='10%';
-  showToast('Reading paper...');
-  const reader=new FileReader();
-  reader.onload=async e=>{
-    const b64=e.target.result;
-    // Hash for duplicate detection
-    const fileHash=await sha256(b64.slice(0,5000)+file.size);
-    // Check for duplicate
-    const existing=await get(ref(db,`rooms/${ROOM_CODE}/papers`));
-    const papers=existing.val()||{};
-    const isDup=Object.values(papers).some(p=>p.hash===fileHash);
-    if(isDup){fill.style.width='0%';prog.style.display='none';showToast('⚠️ This paper was already uploaded',true);return;}
-    fill.style.width='30%';
-    // Save paper metadata
-    const paperId=await push(ref(db,`rooms/${ROOM_CODE}/papers`),{
-      name:file.name,year,exam,hash:fileHash,uploadedBy:USERNAME,
-      ts:Date.now(),status:'processing',questionCount:0
-    });
-    fill.style.width='50%';showToast('🧠 Extracting questions...');
-    // Extract questions via Claude
-    try{
-      const isImage=file.type.startsWith('image/');
-      const msgContent=isImage
-        ?[{type:'image',source:{type:'base64',media_type:file.type,data:b64.split(',')[1]}},{type:'text',text:buildExtractionPrompt(year,exam)}]
-        :[{type:'document',source:{type:'base64',media_type:'application/pdf',data:b64.split(',')[1]}},{type:'text',text:buildExtractionPrompt(year,exam)}];
-      const res=await fetch('https://claude-proxy.muhammed-f.workers.dev',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,messages:[{role:'user',content:msgContent}]})});
-      if(!res.ok)throw new Error('HTTP '+res.status);
-      const data=await res.json();
-      if(data.error)throw new Error(data.error.message||'API error');
-      const txt=data.content[0].text.trim();
-      const clean=txt.replace(/```json|```/g,'').trim();
-      const questions=JSON.parse(clean);
-      fill.style.width='80%';
-      // Save each question to Firebase
-      for(const q of questions){
-        await push(ref(db,`rooms/${ROOM_CODE}/questions`),{
-          text:q.question,subject:q.subject||'Unknown',topic:q.topic||'General',
-          paperId:paperId.key,year,exam,uploadedBy:USERNAME,ts:Date.now()
-        });
-      }
-      // Update paper status
-      await set(ref(db,`rooms/${ROOM_CODE}/papers/${paperId.key}/status`),'done');
-      await set(ref(db,`rooms/${ROOM_CODE}/papers/${paperId.key}/questionCount`),questions.length);
-      fill.style.width='100%';setTimeout(()=>{prog.style.display='none';fill.style.width='0%';},600);
-      showToast(`✅ Extracted ${questions.length} questions!`);
-      document.getElementById('qb-year').value='';document.getElementById('qb-exam').value='';
-    }catch(err){
-      await set(ref(db,`rooms/${ROOM_CODE}/papers/${paperId.key}/status`),'error');
-      fill.style.width='0%';prog.style.display='none';
-      showToast('❌ Extraction failed: '+err.message,true);
-    }
-  };
-  reader.readAsDataURL(file);
+window.setQBSubjTab=(s,btn)=>{
+  qbSubjFilter=s;
+  document.querySelectorAll('#qb-subj-tabs .stab').forEach(t=>t.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  renderPapers(window._qbPapers||{});
+  renderQBQuestions(window._qbQuestions||{});
+  renderQBTopics(window._qbQuestions||{});
 };
 
-function buildExtractionPrompt(year,exam){
-  const allTopics=[];for(const[s,info]of Object.entries(SUBJECTS))info.topics.forEach(t=>allTopics.push(`[${s}] ${t}`));
-  return`You are analyzing an MBA Marketing exam paper from KJ Somaiya Institute of Management.\nYear: ${year}, Exam: ${exam}\n\nExtract ALL questions from this paper. For each question, map it to the most relevant topic from this list:\n${allTopics.join('\n')}\n\nRespond ONLY with valid JSON array, no markdown:\n[\n  {\n    "question": "full question text",\n    "subject": "subject name from the list",\n    "topic": "exact topic name from the list"\n  }\n]`;}
+// ── CSV IMPORT ────────────────────────────────────────────────────────────
+window.handleCSVDrop=e=>{
+  e.preventDefault();
+  document.getElementById('qb-upload-zone').classList.remove('drag');
+  const f=e.dataTransfer.files[0];
+  if(f)importCSV(f);
+};
 
-function listenPapers(){
-  if(!ROOM_CODE)return;
-  onValue(ref(db,`rooms/${ROOM_CODE}/papers`),snap=>{renderPapers(snap.val()||{});});
-  onValue(ref(db,`rooms/${ROOM_CODE}/questions`),snap=>{renderQBQuestions(snap.val()||{});renderQBTopics(snap.val()||{});});
+window.importCSV=async file=>{
+  if(!file)return;
+  if(!ROOM_CODE){showToast('Join a room first',true);return;}
+  if(!file.name.endsWith('.csv')){showToast('Please upload a .csv file',true);return;}
+  const prog=document.getElementById('qb-upload-prog'),fill=document.getElementById('qb-upload-fill');
+  const resultEl=document.getElementById('qb-import-result');
+  prog.style.display='block';fill.style.width='20%';
+  const text=await file.text();
+  const rows=parseCSV(text);
+  if(!rows.length){prog.style.display='none';showToast('❌ No rows found in CSV',true);return;}
+  // Validate headers
+  const required=['question','subject','topic','month_year','exam'];
+  const headers=Object.keys(rows[0]).map(h=>h.trim().toLowerCase());
+  const missing=required.filter(r=>!headers.includes(r));
+  if(missing.length){prog.style.display='none';showToast(`❌ Missing columns: ${missing.join(', ')}`,true);return;}
+  fill.style.width='40%';
+  // Load existing questions for duplicate check
+  const existing=await get(ref(db,`rooms/${ROOM_CODE}/questions`));
+  const existingQs=Object.values(existing.val()||{});
+  const existingTexts=new Set(existingQs.map(q=>q.text?.trim().toLowerCase()));
+  fill.style.width='60%';
+  const VALID_SUBJECTS=['IMC','International Marketing','Retail Marketing','Marketing Strategy'];
+  let imported=0,skippedDup=0,skippedInvalid=0;
+  for(const row of rows){
+    const question=(row.question||'').trim();
+    const subject=(row.subject||'').trim();
+    const topic=(row.topic||'').trim();
+    const month_year=(row.month_year||'').trim();
+    const exam=(row.exam||'').trim();
+    if(!question||!subject||!month_year||!exam){skippedInvalid++;continue;}
+    if(!VALID_SUBJECTS.includes(subject)){skippedInvalid++;continue;}
+    if(existingTexts.has(question.toLowerCase())){skippedDup++;continue;}
+    await push(ref(db,`rooms/${ROOM_CODE}/questions`),{
+      text:question,subject,topic:topic||'General',
+      month_year,exam,uploadedBy:USERNAME,ts:Date.now()
+    });
+    existingTexts.add(question.toLowerCase());
+    imported++;
+  }
+  fill.style.width='100%';
+  setTimeout(()=>{prog.style.display='none';fill.style.width='0%';},500);
+  // Show result
+  const parts=[];
+  if(imported)parts.push(`✅ ${imported} question${imported!==1?'s':''} imported`);
+  if(skippedDup)parts.push(`⏭ ${skippedDup} duplicate${skippedDup!==1?'s':''} skipped`);
+  if(skippedInvalid)parts.push(`⚠️ ${skippedInvalid} invalid row${skippedInvalid!==1?'s':''} skipped`);
+  resultEl.textContent=parts.join(' · ');
+  resultEl.style.display='block';
+  resultEl.style.background=imported?'var(--done-bg)':'var(--prog-bg)';
+  resultEl.style.color=imported?'var(--done-text)':'var(--prog-text)';
+  setTimeout(()=>resultEl.style.display='none',6000);
+  document.getElementById('qb-csv-inp').value='';
+  if(imported)showToast(`✅ Imported ${imported} questions!`);
+};
+
+function parseCSV(text){
+  const lines=text.split(/\r?\n/).filter(l=>l.trim());
+  if(lines.length<2)return[];
+  const headers=lines[0].split(',').map(h=>h.trim().replace(/^"|"$/g,'').toLowerCase());
+  const rows=[];
+  for(let i=1;i<lines.length;i++){
+    const vals=splitCSVLine(lines[i]);
+    if(vals.length<headers.length&&vals.every(v=>!v.trim()))continue;
+    const obj={};
+    headers.forEach((h,idx)=>obj[h]=(vals[idx]||'').trim().replace(/^"|"$/g,''));
+    if(Object.values(obj).some(v=>v))rows.push(obj);
+  }
+  return rows;
+}
+
+function splitCSVLine(line){
+  const result=[];let cur='';let inQ=false;
+  for(let i=0;i<line.length;i++){
+    const c=line[i];
+    if(c==='"'){inQ=!inQ;}
+    else if(c===','&&!inQ){result.push(cur);cur='';}
+    else cur+=c;
+  }
+  result.push(cur);
+  return result;
 }
 
 function renderPapers(papers){
   const el=document.getElementById('qb-papers-list');
-  const entries=Object.entries(papers).sort((a,b)=>(b[1].ts||0)-(a[1].ts||0));
-  if(!entries.length){el.innerHTML='<div class="no-content">No papers yet — upload one above!</div>';return;}
-  el.innerHTML=entries.map(([pid,p])=>`
-    <div class="paper-card">
+  let entries=Object.entries(papers).sort((a,b)=>(b[1].ts||0)-(a[1].ts||0));
+  if(qbSubjFilter!=='All')entries=entries.filter(([,p])=>p.subject===qbSubjFilter);
+  if(!entries.length){el.innerHTML=`<div class="no-content">No ${qbSubjFilter==='All'?'':qbSubjFilter+' '}papers yet</div>`;return;}
+  el.innerHTML=entries.map(([pid,p])=>{
+    const sInfo=SUBJECTS[p.subject];
+    return`<div class="paper-card">
       <div class="paper-card-header">
-        <div><div class="paper-title">${p.exam} — ${p.year}</div><div class="paper-meta">${p.name} · by ${p.uploadedBy} · ${p.ts?timeAgo(p.ts):''}</div></div>
+        <div>
+          <div class="paper-title">${p.exam} — ${p.year}</div>
+          <div class="paper-meta" style="display:flex;align-items:center;gap:6px;margin-top:4px;">
+            <span style="background:${sInfo?.color||'#6b7280'};color:white;font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:99px;">${p.subject||'?'}</span>
+            <span>${p.name} · ${p.uploadedBy} · ${p.ts?timeAgo(p.ts):''}</span>
+          </div>
+        </div>
         <span class="paper-badge${p.status==='processing'?' processing':p.status==='error'?' error':''}">${p.status==='done'?`${p.questionCount||0} Qs`:p.status==='error'?'Error':'Processing...'}</span>
       </div>
-      <div class="paper-actions">
-        ${p.uploadedBy===USERNAME?`<button class="paper-btn danger" onclick="deletePaper('${pid}')">Delete</button>`:''}
-      </div>
-    </div>`).join('');
+      <div class="paper-actions">${p.uploadedBy===USERNAME?`<button class="paper-btn danger" onclick="deletePaper('${pid}')">Delete</button>`:''}</div>
+    </div>`;
+  }).join('');
 }
 
 function renderQBQuestions(questions){
   const el=document.getElementById('qb-questions-list');
-  // Build repeat map
   const repeatMap={};
-  Object.values(questions).forEach(q=>{const k=q.topic||'General';if(!repeatMap[k])repeatMap[k]=[];repeatMap[k].push(q);});
-  // Filter
+  Object.values(questions).forEach(q=>{const k=`${q.subject}||${q.topic}`;if(!repeatMap[k])repeatMap[k]=0;repeatMap[k]++;});
   let entries=Object.values(questions);
   if(qbSubjFilter!=='All')entries=entries.filter(q=>q.subject===qbSubjFilter);
-  entries.sort((a,b)=>(repeatMap[b.topic]?.length||1)-(repeatMap[a.topic]?.length||1));
-  if(!entries.length){el.innerHTML='<div class="no-content">No questions yet</div>';return;}
+  entries.sort((a,b)=>(repeatMap[`${b.subject}||${b.topic}`]||1)-(repeatMap[`${a.subject}||${a.topic}`]||1));
+  if(!entries.length){el.innerHTML=`<div class="no-content">No ${qbSubjFilter==='All'?'':qbSubjFilter+' '}questions yet</div>`;return;}
   el.innerHTML=entries.map(q=>{
-    const reps=repeatMap[q.topic]?.length||1;
+    const reps=repeatMap[`${q.subject}||${q.topic}`]||1;
     const rc=reps>=3?'r3':reps>=2?'r2':'r1';
     const sInfo=SUBJECTS[q.subject];
     return`<div class="qb-question-item">
@@ -1180,46 +1332,240 @@ function renderQBQuestions(questions){
         <span class="qb-q-subj" style="background:${sInfo?.color||'#6b7280'}">${q.subject||'?'}</span>
         <span class="qb-q-topic">${q.topic||'General'}</span>
         <span class="qb-repeat-badge ${rc}">${reps}× asked</span>
-        <span style="font-size:0.68rem;color:var(--muted)">${q.year} ${q.exam}</span>
+        <span style="font-size:0.68rem;color:var(--muted)">${q.month_year||q.year||''} · ${q.exam}</span>
       </div>
     </div>`;
   }).join('');
-  // Subject filter buttons
-  const filterEl=document.getElementById('qb-subj-filter');
-  const subjList=['All',...new Set(Object.values(questions).map(q=>q.subject).filter(Boolean))];
-  filterEl.innerHTML=subjList.map(s=>`<button class="qb-filter-btn${s===qbSubjFilter?' active':''}" onclick="setQBFilter('${s}')">${s.split(' ')[0]}</button>`).join('');
 }
 
 function renderQBTopics(questions){
   const el=document.getElementById('qb-topics-list');
   const topicMap={};
   Object.values(questions).forEach(q=>{
+    if(qbSubjFilter!=='All'&&q.subject!==qbSubjFilter)return;
     const k=`${q.subject}||${q.topic}`;
     if(!topicMap[k])topicMap[k]={subject:q.subject,topic:q.topic,count:0,years:new Set()};
-    topicMap[k].count++;topicMap[k].years.add(q.year);
+    topicMap[k].count++;topicMap[k].years.add(q.month_year||q.year||'?');
   });
   const sorted=Object.values(topicMap).sort((a,b)=>b.count-a.count);
   const max=sorted[0]?.count||1;
-  if(!sorted.length){el.innerHTML='<div class="no-content">No data yet</div>';return;}
-  el.innerHTML=sorted.map(t=>{
-    const sInfo=SUBJECTS[t.subject];
-    return`<div class="qb-topic-row">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <div class="qb-topic-name">${t.topic}</div>
-        <span class="qb-repeat-badge ${t.count>=3?'r3':t.count>=2?'r2':'r1'}">${t.count}× asked</span>
-      </div>
-      <div class="qb-topic-bar"><div class="qb-topic-fill" style="width:${Math.round(t.count/max*100)}%;background:${sInfo?.color||'var(--accent)'}"></div></div>
-      <div class="qb-topic-meta">${t.subject} · Years: ${[...t.years].join(', ')}</div>
+  if(!sorted.length){el.innerHTML=`<div class="no-content">No ${qbSubjFilter==='All'?'':qbSubjFilter+' '}topic data yet</div>`;return;}
+  const grouped={};sorted.forEach(t=>{if(!grouped[t.subject])grouped[t.subject]=[];grouped[t.subject].push(t);});
+  const subjOrder=qbSubjFilter==='All'?Object.keys(SUBJECTS):[qbSubjFilter];
+  el.innerHTML=subjOrder.filter(s=>grouped[s]).map(s=>{
+    const sInfo=SUBJECTS[s];
+    return`<div style="margin-bottom:18px;">
+      <div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:${sInfo?.color||'var(--accent)'};margin-bottom:8px;padding-bottom:6px;border-bottom:2px solid ${sInfo?.color||'var(--accent)'};">${s}</div>
+      ${grouped[s].map(t=>`<div class="qb-topic-row">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div class="qb-topic-name">${t.topic}</div>
+          <span class="qb-repeat-badge ${t.count>=3?'r3':t.count>=2?'r2':'r1'}">${t.count}× asked</span>
+        </div>
+        <div class="qb-topic-bar"><div class="qb-topic-fill" style="width:${Math.round(t.count/max*100)}%;background:${sInfo?.color||'var(--accent)'}"></div></div>
+        <div class="qb-topic-meta">Years: ${[...t.years].join(', ')}</div>
+      </div>`).join('')}
     </div>`;
   }).join('');
 }
 
-window.setQBFilter=s=>{qbSubjFilter=s;const snap=window._qbQuestions||{};renderQBQuestions(snap);};
-window.switchQBView=(v,btn)=>{qbView=v;document.querySelectorAll('#qb-view-tabs .stab').forEach(t=>t.classList.remove('active'));if(btn)btn.classList.add('active');['papers','questions','topics'].forEach(n=>{document.getElementById(`qb-view-${n}`).style.display=n===v?'block':'none';});};
+window.setQBSubjFilter=window.setQBFilter=(s,btn)=>{
+  qbSubjFilter=s;
+  document.querySelectorAll('#qb-subj-tabs .stab').forEach(t=>t.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  const qs=window._qbQuestions||{};
+  renderQBQuestions(qs);renderQBTopics(qs);renderPapers(window._qbPapers||{});
+};
+window.switchQBView=(v,btn)=>{qbView=v;document.querySelectorAll('#qb-view-tabs .stab').forEach(t=>t.classList.remove('active'));if(btn)btn.classList.add('active');['questions','topics'].forEach(n=>{document.getElementById(`qb-view-${n}`).style.display=n===v?'block':'none';});};
 window.deletePaper=async pid=>{if(!confirm('Delete this paper and all its extracted questions?'))return;const snap=await get(ref(db,`rooms/${ROOM_CODE}/questions`));const qs=snap.val()||{};for(const[qid,q]of Object.entries(qs)){if(q.paperId===pid)await remove(ref(db,`rooms/${ROOM_CODE}/questions/${qid}`));}await remove(ref(db,`rooms/${ROOM_CODE}/papers/${pid}`));showToast('🗑️ Paper deleted');};
 
-// Cache questions for filter
+// Cache questions and papers for filter
 function listenQBQuestions(){onValue(ref(db,`rooms/${ROOM_CODE}/questions`),snap=>{window._qbQuestions=snap.val()||{};});}
+function listenPapers(){
+  if(!ROOM_CODE)return;
+  onValue(ref(db,`rooms/${ROOM_CODE}/papers`),snap=>{window._qbPapers=snap.val()||{};renderPapers(window._qbPapers);});
+  onValue(ref(db,`rooms/${ROOM_CODE}/questions`),snap=>{window._qbQuestions=snap.val()||{};renderQBQuestions(window._qbQuestions);renderQBTopics(window._qbQuestions);});
+}
+
+// ── POMODORO ────────────────────────────────────────────────────────────────
+const POMO_FOCUS=25*60, POMO_BREAK=5*60;
+let pomoRunning=false, pomoIsBreak=false, pomoSecs=POMO_FOCUS, pomoInterval=null;
+let pomoMode='candle'; // 'candle' or 'hourglass'
+let pomoCardOpen=false;
+
+function pomoPad(n){return String(n).padStart(2,'0');}
+function pomoFmt(s){return `${pomoPad(Math.floor(s/60))}:${pomoPad(s%60)}`;}
+
+window.togglePomoCard=()=>{
+  pomoCardOpen=!pomoCardOpen;
+  document.getElementById('pomo-card').classList.toggle('open',pomoCardOpen);
+};
+
+window.togglePomoMode=()=>{
+  pomoMode=pomoMode==='candle'?'hourglass':'candle';
+  document.getElementById('pomo-candle').style.display=pomoMode==='candle'?'flex':'none';
+  document.getElementById('pomo-hourglass').style.display=pomoMode==='hourglass'?'flex':'none';
+  document.getElementById('pomo-toggle-btn').textContent=pomoMode==='candle'?'⏳ Hourglass':'🕯️ Candle';
+  document.getElementById('pomo-pill-emoji').textContent=pomoMode==='candle'?'🕯️':'⏳';
+  updatePomoVisuals();
+};
+
+window.togglePomo=()=>{
+  if(pomoRunning){
+    clearInterval(pomoInterval);pomoRunning=false;
+    document.getElementById('pomo-play-btn').textContent='▶';
+    document.getElementById('pomo-pill-dot').classList.remove('on');
+  } else {
+    pomoRunning=true;
+    document.getElementById('pomo-play-btn').textContent='⏸';
+    document.getElementById('pomo-pill-dot').classList.add('on');
+    pomoInterval=setInterval(pomoTick,1000);
+  }
+};
+
+window.resetPomo=()=>{
+  clearInterval(pomoInterval);pomoRunning=false;pomoIsBreak=false;
+  pomoSecs=POMO_FOCUS;
+  document.getElementById('pomo-play-btn').textContent='▶';
+  document.getElementById('pomo-pill-dot').classList.remove('on');
+  document.getElementById('pomo-phase-lbl').textContent='Focus';
+  document.getElementById('pomo-phase-sub').textContent='Focus Session';
+  document.getElementById('pomo-prog-fill').style.background='';
+  document.getElementById('pomo-pill-time').style.color='';
+  updatePomoDisplay();updatePomoVisuals();
+};
+
+function pomoTick(){
+  pomoSecs--;
+  if(pomoSecs<=0){
+    pomoComplete();return;
+  }
+  updatePomoDisplay();updatePomoVisuals();
+}
+
+function pomoComplete(){
+  clearInterval(pomoInterval);pomoRunning=false;
+  document.getElementById('pomo-play-btn').textContent='▶';
+  document.getElementById('pomo-pill-dot').classList.remove('on');
+  if(!pomoIsBreak){
+    // Work session done — blackout + bell
+    triggerBlackout();
+    playBell(880, 1.2);
+    setTimeout(()=>{
+      pomoIsBreak=true;pomoSecs=POMO_BREAK;
+      document.getElementById('pomo-phase-lbl').textContent='Break';
+      document.getElementById('pomo-phase-sub').textContent='Take a Break';
+      document.getElementById('pomo-pill-time').classList.add('break-color');
+      document.getElementById('pomo-prog-fill').classList.add('break-prog');
+      updatePomoDisplay();updatePomoVisuals();
+    },3200);
+  } else {
+    // Break done — soft chime
+    playBell(523, 0.6);
+    pomoIsBreak=false;pomoSecs=POMO_FOCUS;
+    document.getElementById('pomo-phase-lbl').textContent='Focus';
+    document.getElementById('pomo-phase-sub').textContent='Focus Session';
+    document.getElementById('pomo-pill-time').classList.remove('break-color');
+    document.getElementById('pomo-prog-fill').classList.remove('break-prog');
+    updatePomoDisplay();updatePomoVisuals();
+  }
+}
+
+function triggerBlackout(){
+  const bo=document.getElementById('pomo-blackout');
+  bo.classList.add('on');
+  // Smoke effect
+  const sw=document.getElementById('pomo-smoke');
+  if(sw){
+    sw.style.display='block';
+    for(let i=0;i<5;i++){
+      const p=document.createElement('div');
+      p.className='smoke-p';
+      const dx=(Math.random()*20-10).toFixed(0);
+      p.style.cssText=`left:${Math.random()*12}px;--dx:${dx}px;animation:smokeRise ${1+Math.random()}s ease-out ${i*0.2}s forwards;`;
+      sw.appendChild(p);
+      setTimeout(()=>p.remove(),2500);
+    }
+    setTimeout(()=>{sw.style.display='none';},2600);
+  }
+  // Hide flame
+  const fl=document.getElementById('pomo-flame-wrap');
+  if(fl)fl.style.opacity='0';
+  setTimeout(()=>{
+    bo.classList.remove('on');
+    if(fl)fl.style.opacity='1';
+  },3200);
+}
+
+function playBell(freq=880, dur=1.0){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const osc=ctx.createOscillator();
+    const gain=ctx.createGain();
+    osc.connect(gain);gain.connect(ctx.destination);
+    osc.frequency.value=freq;
+    osc.type='sine';
+    gain.gain.setValueAtTime(0,ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.4,ctx.currentTime+0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);
+    osc.start(ctx.currentTime);osc.stop(ctx.currentTime+dur);
+  }catch(e){}
+}
+
+function updatePomoDisplay(){
+  const t=pomoFmt(pomoSecs);
+  document.getElementById('pomo-time-big').textContent=t;
+  document.getElementById('pomo-pill-time').textContent=t;
+  const total=pomoIsBreak?POMO_BREAK:POMO_FOCUS;
+  const pct=Math.round((1-pomoSecs/total)*100);
+  document.getElementById('pomo-prog-fill').style.width=pct+'%';
+}
+
+function updatePomoVisuals(){
+  const total=pomoIsBreak?POMO_BREAK:POMO_FOCUS;
+  const progress=1-pomoSecs/total; // 0 = start, 1 = end
+  if(pomoMode==='candle'){
+    // Candle melts from 40px down to 6px
+    const h=Math.max(6,Math.round(40-(40-6)*progress));
+    const body=document.getElementById('pomo-candle-body');
+    if(body)body.style.height=h+'px';
+    // Flame gets more intense in last 30s
+    const flame=document.getElementById('pomo-flame');
+    if(flame){
+      if(!pomoIsBreak&&pomoSecs<=30&&pomoRunning){
+        flame.style.animationDuration='0.5s';
+        flame.style.background='#ff6b00';
+      } else {
+        flame.style.animationDuration='1.3s';
+        flame.style.background=pomoIsBreak?'#60a5fa':'#fcb045';
+      }
+    }
+  } else {
+    // Hourglass — top sand depletes, bottom sand fills
+    const topH=Math.round(26*(1-progress));
+    const botH=Math.round(26*progress);
+    const topSand=document.getElementById('hg-top-sand');
+    const botSand=document.getElementById('hg-bot-sand');
+    if(topSand)topSand.setAttribute('height',String(topH));
+    if(botSand){
+      botSand.setAttribute('y',String(56-botH));
+      botSand.setAttribute('height',String(botH));
+      botSand.setAttribute('fill',pomoIsBreak?'#60a5fa':'#fcb045');
+    }
+    if(topSand)topSand.setAttribute('fill',pomoIsBreak?'#60a5fa':'#fcb045');
+    // Hide falling grain when done
+    const grain=document.getElementById('hg-grain');
+    if(grain)grain.style.display=pomoSecs<=0?'none':'block';
+  }
+}
+
+// Close pomo card when clicking outside
+document.addEventListener('click',e=>{
+  const card=document.getElementById('pomo-card');
+  const pill=document.getElementById('pomo-pill');
+  if(pomoCardOpen&&!card.contains(e.target)&&!pill.contains(e.target)){
+    pomoCardOpen=false;card.classList.remove('open');
+  }
+});
 
 // ── AUTO LOGIN ──
 applyTheme();
