@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Study Tracker</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#0a0a14;color:#e2e8f0;min-height:100vh;}
+
+/* ── LOGIN ── */
+#login-screen{position:fixed;inset:0;background:#0a0a14;display:flex;align-items:center;justify-content:center;z-index:100;}
+.login-box{background:#13131f;border:1px solid #2d2d44;border-radius:20px;padding:40px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,0.6);text-align:center;}
+.login-box .lock{font-size:2.5rem;margin-bottom:12px;}
+.login-box h2{font-size:1.4rem;font-weight:800;margin-bottom:6px;}
+.login-box p{font-size:0.82rem;color:#64748b;margin-bottom:24px;}
+.login-input{width:100%;padding:12px 14px;border-radius:10px;border:2px solid #2d2d44;font-size:0.95rem;background:#0a0a14;color:#e2e8f0;outline:none;margin-bottom:12px;transition:border .2s;text-align:center;letter-spacing:.1em;}
+.login-input:focus{border-color:#7c3aed;}
+.login-btn{width:100%;padding:12px;border-radius:10px;border:none;background:#7c3aed;color:white;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s;}
+.login-btn:hover{background:#6d28d9;}
+.login-err{color:#ef4444;font-size:0.82rem;margin-top:8px;display:none;}
+
+/* ── LAYOUT ── */
+header{background:#13131f;border-bottom:1px solid #2d2d44;padding:16px 28px;display:flex;justify-content:space-between;align-items:center;}
+header h1{font-size:1.2rem;font-weight:800;color:#a78bfa;}
+header p{font-size:0.76rem;color:#64748b;margin-top:2px;}
+.badge{background:#7c3aed22;color:#a78bfa;border:1px solid #7c3aed44;border-radius:8px;padding:4px 12px;font-size:0.76rem;font-weight:700;}
+.logout-btn{background:#1e1e30;border:1px solid #2d2d44;color:#94a3b8;border-radius:8px;padding:6px 14px;font-size:0.8rem;cursor:pointer;}
+.logout-btn:hover{color:#ef4444;border-color:#ef4444;}
+
+.main{max-width:1200px;margin:0 auto;padding:24px 20px;}
+
+/* ── NAV ── */
+.admin-nav{display:flex;gap:4px;margin-bottom:24px;background:#13131f;border:1px solid #2d2d44;border-radius:12px;padding:6px;}
+.admin-tab{flex:1;padding:9px 16px;border-radius:8px;border:none;background:none;color:#64748b;font-size:0.84rem;font-weight:600;cursor:pointer;transition:all .15s;text-align:center;}
+.admin-tab.active{background:#7c3aed;color:white;}
+.admin-tab:hover:not(.active){color:#e2e8f0;background:#1e1e30;}
+.admin-view{display:none;}
+.admin-view.active{display:block;}
+
+/* ── CARDS ── */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px;}
+.stat-card{background:#13131f;border:1px solid #2d2d44;border-radius:14px;padding:16px;text-align:center;}
+.stat-card .sv{font-size:2rem;font-weight:900;}
+.stat-card .sl{font-size:0.74rem;color:#64748b;margin-top:4px;}
+
+/* ── SECTION ── */
+.section{background:#13131f;border:1px solid #2d2d44;border-radius:14px;padding:20px;margin-bottom:20px;}
+.section h3{font-size:0.95rem;font-weight:700;margin-bottom:16px;color:#a78bfa;display:flex;align-items:center;gap:8px;}
+
+/* ── TABLE ── */
+.admin-table{width:100%;border-collapse:collapse;}
+.admin-table th{padding:9px 12px;text-align:left;font-size:0.75rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #2d2d44;}
+.admin-table td{padding:10px 12px;font-size:0.84rem;border-bottom:1px solid #1e1e30;vertical-align:middle;}
+.admin-table tr:last-child td{border-bottom:none;}
+.admin-table tr:hover td{background:#1a1a2e;}
+
+/* ── BUTTONS ── */
+.btn{padding:5px 12px;border-radius:8px;border:none;font-size:0.76rem;font-weight:700;cursor:pointer;transition:all .15s;}
+.btn-danger{background:#450a0a;color:#fca5a5;border:1px solid #7f1d1d;}
+.btn-danger:hover{background:#7f1d1d;color:white;}
+.btn-warning{background:#451a03;color:#fcd34d;border:1px solid #78350f;}
+.btn-warning:hover{background:#78350f;color:white;}
+.btn-success{background:#064e3b;color:#6ee7b7;border:1px solid #065f46;}
+.btn-success:hover{background:#065f46;color:white;}
+.btn-purple{background:#4c1d95;color:#c4b5fd;border:1px solid #5b21b6;}
+.btn-purple:hover{background:#5b21b6;color:white;}
+.btn-blue{background:#1e3a5f;color:#93c5fd;border:1px solid #1d4ed8;}
+.btn-blue:hover{background:#1d4ed8;color:white;}
+
+/* ── STATUS DOTS ── */
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px;}
+.dot-green{background:#10b981;}
+.dot-gray{background:#4b5563;}
+.dot-red{background:#ef4444;}
+
+/* ── ONLINE BADGE ── */
+.online-badge{background:#064e3b;color:#6ee7b7;border-radius:6px;padding:2px 8px;font-size:0.7rem;font-weight:700;}
+.offline-badge{background:#1e1e30;color:#64748b;border-radius:6px;padding:2px 8px;font-size:0.7rem;}
+
+/* ── PROGRESS BAR ── */
+.mini-bar{height:6px;background:#1e1e30;border-radius:99px;overflow:hidden;width:80px;display:inline-block;vertical-align:middle;margin-left:8px;}
+.mini-fill{height:100%;border-radius:99px;background:#7c3aed;}
+
+/* ── ANNOUNCEMENT ── */
+.ann-form{display:flex;flex-direction:column;gap:10px;}
+.ann-input{padding:10px 14px;border-radius:10px;border:2px solid #2d2d44;font-size:0.9rem;background:#0a0a14;color:#e2e8f0;outline:none;transition:border .2s;width:100%;}
+.ann-input:focus{border-color:#7c3aed;}
+.ann-select{padding:9px 12px;border-radius:10px;border:2px solid #2d2d44;font-size:0.84rem;background:#0a0a14;color:#e2e8f0;outline:none;width:100%;}
+.ann-btn{padding:10px 20px;border-radius:10px;border:none;background:#7c3aed;color:white;font-size:0.9rem;font-weight:700;cursor:pointer;align-self:flex-start;}
+.ann-btn:hover{background:#6d28d9;}
+
+/* ── MERGE MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:none;align-items:center;justify-content:center;}
+.modal-overlay.show{display:flex;}
+.modal{background:#13131f;border:1px solid #2d2d44;border-radius:16px;padding:28px;width:100%;max-width:420px;}
+.modal h3{font-size:1.1rem;font-weight:800;margin-bottom:6px;}
+.modal p{font-size:0.82rem;color:#64748b;margin-bottom:18px;}
+.modal-input{width:100%;padding:10px 12px;border-radius:10px;border:2px solid #2d2d44;font-size:0.88rem;background:#0a0a14;color:#e2e8f0;outline:none;margin-bottom:10px;transition:border .2s;}
+.modal-input:focus{border-color:#7c3aed;}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;}
+.modal-cancel{padding:8px 16px;border-radius:8px;border:1px solid #2d2d44;background:none;color:#94a3b8;cursor:pointer;font-size:0.84rem;}
+.modal-cancel:hover{color:#e2e8f0;}
+.modal-confirm{padding:8px 16px;border-radius:8px;border:none;background:#7c3aed;color:white;font-size:0.84rem;font-weight:700;cursor:pointer;}
+.modal-confirm:hover{background:#6d28d9;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1e1e2e;color:white;padding:10px 20px;border-radius:10px;font-size:0.83rem;font-weight:600;z-index:9999;transition:transform .3s;pointer-events:none;white-space:nowrap;border:1px solid #2d2d44;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+.empty{color:#4b5563;font-size:0.84rem;font-style:italic;padding:20px;text-align:center;}
+.tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:0.7rem;font-weight:700;margin-left:4px;}
+.tag-room{background:#1e3a5f;color:#93c5fd;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="lock">🔐</div>
+    <h2>Admin Panel</h2>
+    <p>This page is restricted. Enter the admin password to continue.</p>
+    <input class="login-input" id="pw-input" type="password" placeholder="••••••••"
+      onkeydown="if(event.key==='Enter')checkPassword()"/>
+    <button class="login-btn" onclick="checkPassword()">Enter</button>
+    <div class="login-err" id="login-err">❌ Incorrect password</div>
+  </div>
+</div>
+
+<!-- MAIN ADMIN UI (hidden until login) -->
+<div id="admin-ui" style="display:none;">
+  <header>
+    <div>
+      <h1>⚙️ Admin Panel — Study Tracker</h1>
+      <p>Manage rooms, users, content and announcements</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="badge">🔐 Admin</span>
+      <a href="index.html"><button class="logout-btn">← Back to Site</button></a>
+      <button class="logout-btn" onclick="adminLogout()">Logout</button>
+    </div>
+  </header>
+
+  <div class="main">
+    <!-- Stats -->
+    <div class="stat-grid" id="global-stats">
+      <div class="stat-card"><div class="sv" style="color:#a78bfa" id="gs-rooms">—</div><div class="sl">Active Rooms</div></div>
+      <div class="stat-card"><div class="sv" style="color:#34d399" id="gs-users">—</div><div class="sl">Total Users</div></div>
+      <div class="stat-card"><div class="sv" style="color:#f59e0b" id="gs-online">—</div><div class="sl">Online Now</div></div>
+      <div class="stat-card"><div class="sv" style="color:#60a5fa" id="gs-avg">—</div><div class="sl">Avg Progress</div></div>
+    </div>
+
+    <!-- Nav -->
+    <div class="admin-nav">
+      <button class="admin-tab active" onclick="switchAdminTab('users',this)">👥 Users</button>
+      <button class="admin-tab" onclick="switchAdminTab('rooms',this)">🏠 Rooms</button>
+      <button class="admin-tab" onclick="switchAdminTab('activity',this)">📊 Activity</button>
+      <button class="admin-tab" onclick="switchAdminTab('announce',this)">📢 Announce</button>
+      <button class="admin-tab" onclick="switchAdminTab('content',this)">🧹 Content</button>
+    </div>
+
+    <!-- USERS VIEW -->
+    <div class="admin-view active" id="view-users">
+      <div class="section">
+        <h3>👥 All Users</h3>
+        <div id="users-table"><div class="empty">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- ROOMS VIEW -->
+    <div class="admin-view" id="view-rooms">
+      <div class="section">
+        <h3>🏠 All Rooms</h3>
+        <div id="rooms-table"><div class="empty">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- ACTIVITY VIEW -->
+    <div class="admin-view" id="view-activity">
+      <div class="section">
+        <h3>📊 Activity — Last Seen & Progress</h3>
+        <div id="activity-table"><div class="empty">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- ANNOUNCE VIEW -->
+    <div class="admin-view" id="view-announce">
+      <div class="section">
+        <h3>📢 Pin Announcement</h3>
+        <div class="ann-form">
+          <input class="ann-input" id="ann-text" placeholder="Write your announcement (e.g. Exam timetable updated!)"/>
+          <select class="ann-select" id="ann-type">
+            <option value="info">ℹ️ Info</option>
+            <option value="warning">⚠️ Warning</option>
+            <option value="success">✅ Success</option>
+          </select>
+          <button class="ann-btn" onclick="pinAnnouncement()">📌 Pin to All Users</button>
+        </div>
+      </div>
+      <div class="section">
+        <h3>📌 Current Announcement</h3>
+        <div id="current-ann"><div class="empty">No announcement pinned.</div></div>
+        <button class="btn btn-danger" style="margin-top:12px" onclick="clearAnnouncement()">🗑️ Remove Announcement</button>
+      </div>
+    </div>
+
+    <!-- CONTENT VIEW -->
+    <div class="admin-view" id="view-content">
+      <div class="section">
+        <h3>🧹 Clear Room Content</h3>
+        <div id="content-rooms"><div class="empty">Loading...</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MERGE MODAL -->
+<div class="modal-overlay" id="merge-modal">
+  <div class="modal">
+    <h3>🔀 Merge / Rename Account</h3>
+    <p>Rename a user or merge two duplicate accounts. The source user's data will be moved to the target name.</p>
+    <div style="font-size:0.8rem;color:#94a3b8;margin-bottom:6px;">User to rename / merge FROM:</div>
+    <input class="modal-input" id="merge-from" placeholder="Old username" readonly/>
+    <div style="font-size:0.8rem;color:#94a3b8;margin-bottom:6px;">New name / merge INTO:</div>
+    <input class="modal-input" id="merge-to" placeholder="New username or target account"/>
+    <div style="font-size:0.72rem;color:#64748b;margin-top:4px;">⚠️ If target already exists, progress data will be overwritten by source.</div>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeMergeModal()">Cancel</button>
+      <button class="modal-confirm" onclick="confirmMerge()">Merge / Rename</button>
+    </div>
+  </div>
+</div>
+
+<!-- REMOVE CONFIRM MODAL -->
+<div class="modal-overlay" id="remove-modal">
+  <div class="modal">
+    <h3>🗑️ Remove User</h3>
+    <p id="remove-msg">Are you sure?</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeRemoveModal()">Cancel</button>
+      <button class="modal-confirm" style="background:#ef4444;" onclick="confirmRemove()">Remove</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue, remove, set, get, update, push }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const ADMIN_PASSWORD = "faraz@admin2026"; // Change this!
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC1wauYpMGQaLU7V6o9LZ-enfG-w6FzJfg",
+  authDomain: "s4page.firebaseapp.com",
+  databaseURL: "https://s4page-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "s4page",
+  storageBucket: "s4page.firebasestorage.app",
+  messagingSenderId: "236575279245",
+  appId: "1:236575279245:web:ca25ba3d6d803a46befac4"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let allData = {};
+let pendingRemove = null;
+let pendingMergeFrom = null;
+
+// ── LOGIN ──────────────────────────────────────────────────────────────────
+window.checkPassword = function() {
+  const val = document.getElementById('pw-input').value;
+  if (val === ADMIN_PASSWORD) {
+    sessionStorage.setItem('admin_auth', '1');
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-ui').style.display = 'block';
+    loadAll();
+  } else {
+    document.getElementById('login-err').style.display = 'block';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+  }
+};
+
+window.adminLogout = function() {
+  sessionStorage.removeItem('admin_auth');
+  location.reload();
+};
+
+// Auto-check session
+if (sessionStorage.getItem('admin_auth') === '1') {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('admin-ui').style.display = 'block';
+  loadAll();
+}
+
+// ── LOAD ALL DATA ──────────────────────────────────────────────────────────
+function loadAll() {
+  onValue(ref(db, 'rooms'), snap => {
+    allData = snap.val() || {};
+    refreshAll();
+  });
+  listenAnnouncement();
+}
+
+function refreshAll() {
+  updateGlobalStats();
+  renderUsers();
+  renderRooms();
+  renderActivity();
+  renderContentRooms();
+}
+
+// ── GLOBAL STATS ──────────────────────────────────────────────────────────
+function updateGlobalStats() {
+  const now = Date.now();
+  let totalUsers = 0, onlineUsers = 0, totalPct = 0, pctCount = 0;
+  const rooms = Object.keys(allData);
+  for (const room of rooms) {
+    const users = allData[room]?.users || {};
+    for (const [, u] of Object.entries(users)) {
+      totalUsers++;
+      if (now - (u.lastSeen || 0) < 120000) onlineUsers++;
+      if (typeof u.overall === 'number') { totalPct += u.overall; pctCount++; }
+    }
+  }
+  document.getElementById('gs-rooms').textContent = rooms.length;
+  document.getElementById('gs-users').textContent = totalUsers;
+  document.getElementById('gs-online').textContent = onlineUsers;
+  document.getElementById('gs-avg').textContent = pctCount ? Math.round(totalPct / pctCount) + '%' : '—';
+}
+
+// ── USERS ──────────────────────────────────────────────────────────────────
+function renderUsers() {
+  const now = Date.now();
+  let rows = '';
+  const allUsers = [];
+  for (const [room, data] of Object.entries(allData)) {
+    for (const [uname, u] of Object.entries(data.users || {})) {
+      allUsers.push({ room, uname, u });
+    }
+  }
+  if (allUsers.length === 0) { document.getElementById('users-table').innerHTML = '<div class="empty">No users found.</div>'; return; }
+  allUsers.sort((a, b) => (b.u.overall || 0) - (a.u.overall || 0));
+  rows = `<table class="admin-table">
+    <thead><tr><th>User</th><th>Room</th><th>Progress</th><th>Streak</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>` +
+    allUsers.map(({ room, uname, u }) => {
+      const online = now - (u.lastSeen || 0) < 120000;
+      const pct = u.overall || 0;
+      return `<tr>
+        <td><strong>${uname}</strong></td>
+        <td><span class="tag tag-room">${room}</span></td>
+        <td>
+          ${pct}%
+          <div class="mini-bar"><div class="mini-fill" style="width:${pct}%"></div></div>
+        </td>
+        <td>🔥 ${u.streak || 0}</td>
+        <td>${online ? '<span class="online-badge">● Online</span>' : '<span class="offline-badge">Offline</span>'}</td>
+        <td style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="btn btn-warning" onclick="openMergeModal('${room}','${uname}')">🔀 Merge/Rename</button>
+          <button class="btn btn-danger" onclick="openRemoveModal('${room}','${uname}')">🗑️ Remove</button>
+        </td>
+      </tr>`;
+    }).join('') +
+    '</tbody></table>';
+  document.getElementById('users-table').innerHTML = rows;
+}
+
+// ── ROOMS ──────────────────────────────────────────────────────────────────
+function renderRooms() {
+  const rooms = Object.entries(allData);
+  if (rooms.length === 0) { document.getElementById('rooms-table').innerHTML = '<div class="empty">No rooms found.</div>'; return; }
+  const html = `<table class="admin-table">
+    <thead><tr><th>Room</th><th>Members</th><th>Avg Progress</th><th>Actions</th></tr></thead>
+    <tbody>` +
+    rooms.map(([rname, rdata]) => {
+      const users = Object.entries(rdata.users || {});
+      const avg = users.length ? Math.round(users.reduce((s, [, u]) => s + (u.overall || 0), 0) / users.length) : 0;
+      const memberList = users.map(([n]) => n).join(', ') || '—';
+      return `<tr>
+        <td><strong>${rname}</strong></td>
+        <td style="font-size:0.8rem;color:#94a3b8;">${users.length} · ${memberList}</td>
+        <td>${avg}%<div class="mini-bar"><div class="mini-fill" style="width:${avg}%"></div></div></td>
+        <td><button class="btn btn-danger" onclick="deleteRoom('${rname}')">🗑️ Delete Room</button></td>
+      </tr>`;
+    }).join('') +
+    '</tbody></table>';
+  document.getElementById('rooms-table').innerHTML = html;
+}
+
+// ── ACTIVITY ──────────────────────────────────────────────────────────────
+function renderActivity() {
+  const now = Date.now();
+  const allUsers = [];
+  for (const [room, data] of Object.entries(allData)) {
+    for (const [uname, u] of Object.entries(data.users || {})) {
+      allUsers.push({ room, uname, u });
+    }
+  }
+  allUsers.sort((a, b) => (b.u.lastSeen || 0) - (a.u.lastSeen || 0));
+  if (allUsers.length === 0) { document.getElementById('activity-table').innerHTML = '<div class="empty">No activity data.</div>'; return; }
+  const subjColors = { "IMC": "#7c3aed", "International Marketing": "#3b82f6", "Retail Marketing": "#10b981", "Marketing Strategy": "#f59e0b" };
+  const html = `<table class="admin-table">
+    <thead><tr><th>User</th><th>Room</th><th>Last Seen</th><th>Studied Today</th><th>Per Subject</th></tr></thead>
+    <tbody>` +
+    allUsers.map(({ room, uname, u }) => {
+      const ls = u.lastSeen ? timeAgo(u.lastSeen) : 'Never';
+      const today = u.studiedToday ? '✅ Yes' : '💤 No';
+      const subjs = Object.entries(u.subjects || {}).map(([s, p]) =>
+        `<span style="font-size:0.72rem;color:${subjColors[s]||'#94a3b8'};margin-right:8px;">${s.split(' ')[0]}: ${p}%</span>`
+      ).join('');
+      return `<tr>
+        <td><strong>${uname}</strong></td>
+        <td><span class="tag tag-room">${room}</span></td>
+        <td style="font-size:0.8rem;color:#94a3b8;">${ls}</td>
+        <td>${today}</td>
+        <td style="font-size:0.78rem;">${subjs || '—'}</td>
+      </tr>`;
+    }).join('') +
+    '</tbody></table>';
+  document.getElementById('activity-table').innerHTML = html;
+}
+
+// ── CONTENT ───────────────────────────────────────────────────────────────
+function renderContentRooms() {
+  const rooms = Object.keys(allData);
+  if (rooms.length === 0) { document.getElementById('content-rooms').innerHTML = '<div class="empty">No rooms.</div>'; return; }
+  document.getElementById('content-rooms').innerHTML = rooms.map(r => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #1e1e30;">
+      <div>
+        <div style="font-weight:700;">${r}</div>
+        <div style="font-size:0.76rem;color:#64748b;margin-top:2px;">
+          ${Object.keys(allData[r]?.users||{}).length} users ·
+          ${Object.keys(allData[r]?.chat||{}).length} chat msgs ·
+          ${Object.keys(allData[r]?.pokes||{}).length} pokes
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-warning" onclick="clearChat('${r}')">🧹 Clear Chat</button>
+        <button class="btn btn-warning" onclick="clearPokes('${r}')">🧹 Clear Pokes</button>
+      </div>
+    </div>`).join('');
+}
+
+// ── ANNOUNCEMENT ──────────────────────────────────────────────────────────
+window.pinAnnouncement = async function() {
+  const text = document.getElementById('ann-text').value.trim();
+  const type = document.getElementById('ann-type').value;
+  if (!text) { showToast('❌ Write something first'); return; }
+  await set(ref(db, 'announcement'), { text, type, ts: Date.now() });
+  showToast('📌 Announcement pinned!');
+  document.getElementById('ann-text').value = '';
+};
+
+window.clearAnnouncement = async function() {
+  await remove(ref(db, 'announcement'));
+  showToast('🗑️ Announcement removed');
+};
+
+function listenAnnouncement() {
+  onValue(ref(db, 'announcement'), snap => {
+    const ann = snap.val();
+    const el = document.getElementById('current-ann');
+    if (!ann) { el.innerHTML = '<div class="empty">No announcement pinned.</div>'; return; }
+    const icons = { info: 'ℹ️', warning: '⚠️', success: '✅' };
+    const colors = { info: '#1e3a5f', warning: '#451a03', success: '#064e3b' };
+    const textColors = { info: '#93c5fd', warning: '#fcd34d', success: '#6ee7b7' };
+    el.innerHTML = `<div style="background:${colors[ann.type]||colors.info};border-radius:10px;padding:14px 16px;color:${textColors[ann.type]||textColors.info};font-size:0.9rem;">
+      <span style="margin-right:8px;">${icons[ann.type]||'ℹ️'}</span>${ann.text}
+      <div style="font-size:0.7rem;opacity:.6;margin-top:6px;">Pinned ${timeAgo(ann.ts)}</div>
+    </div>`;
+  });
+}
+
+// ── REMOVE ────────────────────────────────────────────────────────────────
+window.openRemoveModal = function(room, uname) {
+  pendingRemove = { room, uname };
+  document.getElementById('remove-msg').textContent = `Remove "${uname}" from room "${room}"? This cannot be undone.`;
+  document.getElementById('remove-modal').classList.add('show');
+};
+window.closeRemoveModal = function() { document.getElementById('remove-modal').classList.remove('show'); pendingRemove = null; };
+window.confirmRemove = async function() {
+  if (!pendingRemove) return;
+  await remove(ref(db, `rooms/${pendingRemove.room}/users/${pendingRemove.uname}`));
+  showToast(`🗑️ Removed ${pendingRemove.uname} from ${pendingRemove.room}`);
+  closeRemoveModal();
+};
+
+// ── MERGE / RENAME ────────────────────────────────────────────────────────
+window.openMergeModal = function(room, uname) {
+  pendingMergeFrom = { room, uname };
+  document.getElementById('merge-from').value = uname;
+  document.getElementById('merge-to').value = '';
+  document.getElementById('merge-modal').classList.add('show');
+};
+window.closeMergeModal = function() { document.getElementById('merge-modal').classList.remove('show'); pendingMergeFrom = null; };
+window.confirmMerge = async function() {
+  const toName = document.getElementById('merge-to').value.trim();
+  if (!toName || !pendingMergeFrom) return;
+  const { room, uname } = pendingMergeFrom;
+  const snap = await get(ref(db, `rooms/${room}/users/${uname}`));
+  const userData = snap.val();
+  if (!userData) { showToast('❌ User not found'); return; }
+  await set(ref(db, `rooms/${room}/users/${toName}`), { ...userData, name: toName });
+  await remove(ref(db, `rooms/${room}/users/${uname}`));
+  showToast(`✅ Renamed ${uname} → ${toName}`);
+  closeMergeModal();
+};
+
+// ── DELETE ROOM ───────────────────────────────────────────────────────────
+window.deleteRoom = async function(room) {
+  if (!confirm(`Delete entire room "${room}"? All data will be lost.`)) return;
+  await remove(ref(db, `rooms/${room}`));
+  showToast(`🗑️ Room "${room}" deleted`);
+};
+
+// ── CLEAR CONTENT ─────────────────────────────────────────────────────────
+window.clearChat = async function(room) {
+  if (!confirm(`Clear all chat messages in "${room}"?`)) return;
+  await remove(ref(db, `rooms/${room}/chat`));
+  showToast('🧹 Chat cleared');
+};
+window.clearPokes = async function(room) {
+  if (!confirm(`Clear all pokes in "${room}"?`)) return;
+  await remove(ref(db, `rooms/${room}/pokes`));
+  showToast('🧹 Pokes cleared');
+};
+
+// ── NAV ───────────────────────────────────────────────────────────────────
+window.switchAdminTab = function(view, btn) {
+  document.querySelectorAll('.admin-view').forEach(v => v.classList.toggle('active', v.id === 'view-' + view));
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+};
+
+// ── HELPERS ───────────────────────────────────────────────────────────────
+function timeAgo(ts) {
+  const diff = Date.now() - ts;
+  if (diff < 60000) return 'Just now';
+  if (diff < 3600000) return Math.floor(diff / 60000) + 'm ago';
+  if (diff < 86400000) return Math.floor(diff / 3600000) + 'h ago';
+  return Math.floor(diff / 86400000) + 'd ago';
+}
+
+let toastT;
+window.showToast = function(msg) {
+  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2600);
+};
+</script>
+</body>
+</html>

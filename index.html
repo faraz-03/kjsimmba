@@ -25,19 +25,34 @@
 body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s;}
 
 /* ── SETUP SCREEN ── */
-#setup-screen{position:fixed;inset:0;background:var(--header);display:flex;align-items:center;justify-content:center;z-index:1000;flex-direction:column;gap:0;}
-.setup-box{background:var(--card);border-radius:20px;padding:36px 40px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.4);}
-.setup-box h2{font-size:1.5rem;font-weight:800;margin-bottom:4px;color:var(--text);}
-.setup-box p{font-size:0.84rem;color:var(--muted);margin-bottom:24px;}
-.setup-input{width:100%;padding:11px 14px;border-radius:10px;border:2px solid var(--border);font-size:0.95rem;background:var(--input-bg);color:var(--text);outline:none;margin-bottom:12px;transition:border .2s;}
+#setup-screen{position:fixed;inset:0;background:#0f0f1a;display:flex;align-items:center;justify-content:center;z-index:1000;flex-direction:column;gap:0;}
+.setup-step{display:none;width:100%;max-width:460px;padding:0 16px;}
+.setup-step.active{display:block;}
+.setup-box{background:#1a1a2e;border-radius:20px;padding:36px 38px;box-shadow:0 20px 60px rgba(0,0,0,0.5);border:1px solid #2d2d44;}
+.setup-box h2{font-size:1.5rem;font-weight:800;margin-bottom:4px;color:#e2e8f0;}
+.setup-box p{font-size:0.84rem;color:#94a3b8;margin-bottom:24px;}
+.setup-input{width:100%;padding:12px 14px;border-radius:10px;border:2px solid #2d2d44;font-size:0.95rem;background:#0f0f1a;color:#e2e8f0;outline:none;margin-bottom:14px;transition:border .2s;}
 .setup-input:focus{border-color:#7c3aed;}
 .setup-btn{width:100%;padding:12px;border-radius:10px;border:none;background:#7c3aed;color:white;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s;margin-bottom:10px;}
 .setup-btn:hover{background:#6d28d9;}
-.setup-divider{text-align:center;color:var(--muted);font-size:0.8rem;margin:8px 0;}
-.setup-btn.secondary{background:var(--none-bg);color:var(--text);}
-.setup-btn.secondary:hover{background:var(--border);}
-.room-info{font-size:0.78rem;color:var(--muted);text-align:center;margin-top:8px;}
-.room-info span{font-weight:700;color:#7c3aed;cursor:pointer;}
+.setup-btn.secondary{background:#1e1e30;color:#94a3b8;border:1.5px solid #2d2d44;}
+.setup-btn.secondary:hover{background:#2d2d44;color:#e2e8f0;}
+/* Rooms list */
+.rooms-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;max-height:260px;overflow-y:auto;}
+.room-item{display:flex;justify-content:space-between;align-items:center;background:#0f0f1a;border:1.5px solid #2d2d44;border-radius:12px;padding:12px 16px;cursor:pointer;transition:border .2s;}
+.room-item:hover{border-color:#7c3aed;}
+.room-item-left .ri-name{font-size:0.95rem;font-weight:700;color:#e2e8f0;}
+.room-item-left .ri-members{font-size:0.76rem;color:#94a3b8;margin-top:2px;}
+.room-item-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.ri-join-btn{background:#7c3aed;color:white;border:none;border-radius:8px;padding:5px 14px;font-size:0.78rem;font-weight:700;cursor:pointer;}
+.ri-online{font-size:0.7rem;color:#10b981;}
+.rooms-loading{color:#94a3b8;font-size:0.84rem;text-align:center;padding:20px;}
+.create-room-row{display:flex;gap:8px;}
+.create-room-input{flex:1;padding:10px 12px;border-radius:10px;border:2px solid #2d2d44;font-size:0.88rem;background:#0f0f1a;color:#e2e8f0;outline:none;transition:border .2s;}
+.create-room-input:focus{border-color:#7c3aed;}
+.create-room-btn{padding:10px 16px;border-radius:10px;border:none;background:#10b981;color:white;font-size:0.88rem;font-weight:700;cursor:pointer;white-space:nowrap;}
+.setup-back{background:none;border:none;color:#94a3b8;font-size:0.82rem;cursor:pointer;margin-top:8px;display:block;text-align:center;width:100%;}
+.setup-back:hover{color:#e2e8f0;}
 
 /* ── HEADER ── */
 header{background:var(--header);color:white;padding:18px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
@@ -181,8 +196,8 @@ input.note-input:focus{border-color:#a5b4fc;}
 .lb-subj-fill{height:100%;border-radius:99px;transition:width .6s ease;}
 .lb-subj-pct{font-size:0.68rem;color:var(--muted);text-align:right;}
 .lb-actions{display:flex;gap:8px;flex-wrap:wrap;}
-.taunt-btn{padding:5px 12px;border-radius:8px;border:none;font-size:0.77rem;font-weight:600;cursor:pointer;background:var(--none-bg);color:var(--none-text);transition:all .15s;}
-.taunt-btn:hover{background:#fee2e2;color:#991b1b;}
+.poke-btn{padding:5px 12px;border-radius:8px;border:none;font-size:0.77rem;font-weight:600;cursor:pointer;background:var(--none-bg);color:var(--none-text);transition:all .15s;}
+.poke-btn:hover{background:#fee2e2;color:#991b1b;}
 .study-together-btn{padding:5px 12px;border-radius:8px;border:none;font-size:0.77rem;font-weight:600;cursor:pointer;background:var(--done-bg);color:var(--done-text);transition:all .15s;}
 .study-together-btn:hover{opacity:.8;}
 
@@ -206,15 +221,15 @@ input.note-input:focus{border-color:#a5b4fc;}
 .chat-send{padding:8px 16px;border-radius:8px;border:none;background:#7c3aed;color:white;font-size:0.83rem;font-weight:700;cursor:pointer;}
 .chat-send:hover{background:#6d28d9;}
 
-/* ── TAUNTS FEED ── */
-.taunt-feed{margin-top:24px;}
-.taunt-feed h3{font-size:1rem;font-weight:700;margin-bottom:13px;}
-.taunt-list{display:flex;flex-direction:column;gap:10px;}
-.taunt-item{background:var(--card);border-radius:12px;padding:13px 16px;box-shadow:0 1px 4px var(--shadow);display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
-.taunt-text{font-size:0.84rem;line-height:1.4;}
-.taunt-from{font-size:0.72rem;color:var(--muted);margin-top:4px;}
-.taunt-time{font-size:0.7rem;color:var(--muted);flex-shrink:0;}
-.no-taunts{color:var(--muted);font-size:0.84rem;font-style:italic;text-align:center;padding:20px;}
+/* ── pokeS FEED ── */
+.poke-feed{margin-top:24px;}
+.poke-feed h3{font-size:1rem;font-weight:700;margin-bottom:13px;}
+.poke-list{display:flex;flex-direction:column;gap:10px;}
+.poke-item{background:var(--card);border-radius:12px;padding:13px 16px;box-shadow:0 1px 4px var(--shadow);display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+.poke-text{font-size:0.84rem;line-height:1.4;}
+.poke-from{font-size:0.72rem;color:var(--muted);margin-top:4px;}
+.poke-time{font-size:0.7rem;color:var(--muted);flex-shrink:0;}
+.no-pokes{color:var(--muted);font-size:0.84rem;font-style:italic;text-align:center;padding:20px;}
 
 /* ── LOADING ── */
 .lb-loading{text-align:center;padding:40px;color:var(--muted);font-size:0.9rem;}
@@ -237,14 +252,34 @@ footer{text-align:center;padding:18px;color:var(--muted);font-size:0.73rem;}
 
 <!-- SETUP SCREEN -->
 <div id="setup-screen">
-  <div class="setup-box">
-    <h2>📚 MBA Study Tracker</h2>
-    <p>Enter your name and join or create a study room with friends.</p>
-    <input class="setup-input" id="setup-name" placeholder="Your name (e.g. Faraz)" maxlength="20"/>
-    <input class="setup-input" id="setup-room" placeholder="Room code (e.g. s4mba2026)" maxlength="20"/>
-    <button class="setup-btn" onclick="joinRoom()">🚀 Join / Create Room</button>
-    <div class="room-info">Share the same room code with friends to compete together.<br>Leave blank to use default room: <span onclick="document.getElementById('setup-room').value='s4mba2026'">s4mba2026</span></div>
+
+  <!-- STEP 1: Name -->
+  <div class="setup-step active" id="step-1">
+    <div class="setup-box">
+      <h2>📚 MBA Study Tracker</h2>
+      <p>What should we call you?</p>
+      <input class="setup-input" id="setup-name" placeholder="Your name (e.g. Faraz)" maxlength="20"
+        onkeydown="if(event.key==='Enter')goToRooms()"/>
+      <button class="setup-btn" onclick="goToRooms()">Continue →</button>
+    </div>
   </div>
+
+  <!-- STEP 2: Rooms -->
+  <div class="setup-step" id="step-2">
+    <div class="setup-box">
+      <h2>🏠 Study Rooms</h2>
+      <p>Join an existing room or create a new one.</p>
+      <div class="rooms-list" id="rooms-list"><div class="rooms-loading">⏳ Loading rooms...</div></div>
+      <div style="font-size:0.8rem;color:#94a3b8;margin-bottom:10px;font-weight:600;">➕ Create a new room</div>
+      <div class="create-room-row">
+        <input class="create-room-input" id="new-room-name" placeholder="Room name (e.g. S4 Squad)"
+          maxlength="24" onkeydown="if(event.key==='Enter')createRoom()"/>
+        <button class="create-room-btn" onclick="createRoom()">Create</button>
+      </div>
+      <button class="setup-back" onclick="goBack()">← Change name</button>
+    </div>
+  </div>
+
 </div>
 
 <header>
@@ -306,10 +341,10 @@ footer{text-align:center;padding:18px;color:var(--muted);font-size:0.73rem;}
       </div>
     </div>
 
-    <!-- Taunts Feed -->
-    <div class="taunt-feed">
-      <h3>😈 Taunt Feed</h3>
-      <div class="taunt-list" id="taunt-list"><div class="no-taunts">No taunts yet. Be the first to start trouble 😏</div></div>
+    <!-- pokes Feed -->
+    <div class="poke-feed">
+      <h3>👉 poke Feed</h3>
+      <div class="poke-list" id="poke-list"><div class="no-pokes">No pokes yet. Be the first to start trouble 😏</div></div>
     </div>
   </div>
 </div>
@@ -344,7 +379,7 @@ const SUBJECTS = {
   "Marketing Strategy":{color:"#f59e0b",exam:"2026-03-28",topics:["Marketing Strategy Overview — STPD","Growth Strategies","Ansoff Matrix and its application to marketing strategies","Portfolio Analysis — BCG Matrix, GE Matrix, 7S Framework","Marketing Mix Strategies (4Ps)","Warfare Strategies — Defensive and Offensive","Competitor Analysis","Market Entry Strategies","Strategies for Mature/Declining Markets, Revival Strategies, Blue Ocean Strategy"]}
 };
 
-const TAUNTS = [
+const pokeS = [
   "Still sleeping? 😴 I've done {n} topics already!",
   "Caught you slacking 😂 Better start studying!",
   "I'm at {pct}% and you're... well 👀",
@@ -369,19 +404,71 @@ window.loadKV=loadLocal; window.saveKV=saveLocal;
 window.ROOM_CODE='';
 window.SUBJECTS=SUBJECTS;
 
-// ── JOIN ROOM ─────────────────────────────────────────────────────────────
-window.joinRoom = function() {
-  const nameEl=document.getElementById('setup-name');
-  const roomEl=document.getElementById('setup-room');
-  const name=nameEl.value.trim();
-  const room=(roomEl.value.trim()||'s4mba2026').toLowerCase().replace(/\s+/g,'');
-  if(!name){nameEl.style.borderColor='#ef4444';nameEl.focus();return;}
-  USERNAME=name; ROOM_CODE=room; window.ROOM_CODE=room;
-  saveLocal('mba_username',name); saveLocal('mba_room',room);
-  document.getElementById('setup-screen').style.display='none';
-  document.getElementById('user-chip').textContent='👤 '+name;
-  document.getElementById('room-display').textContent=room;
-  myData=loadLocal('mba_tracker',{});
+// ── SETUP FLOW ────────────────────────────────────────────────────────────
+window.goToRooms = function() {
+  const nameEl = document.getElementById('setup-name');
+  const name = nameEl.value.trim();
+  if (!name) { nameEl.style.borderColor = '#ef4444'; nameEl.focus(); return; }
+  nameEl.style.borderColor = '#2d2d44';
+  USERNAME = name;
+  saveLocal('mba_username', name);
+  document.getElementById('step-1').classList.remove('active');
+  document.getElementById('step-2').classList.add('active');
+  loadRooms();
+};
+
+window.goBack = function() {
+  document.getElementById('step-2').classList.remove('active');
+  document.getElementById('step-1').classList.add('active');
+};
+
+function loadRooms() {
+  const el = document.getElementById('rooms-list');
+  el.innerHTML = '<div class="rooms-loading">⏳ Loading rooms...</div>';
+  onValue(ref(db, 'rooms'), snap => {
+    const rooms = snap.val() || {};
+    const now = Date.now();
+    const active = Object.entries(rooms).map(([code, room]) => {
+      const users = room.users || {};
+      const memberCount = Object.keys(users).length;
+      const onlineCount = Object.values(users).filter(u => now - (u.lastSeen || 0) < 120000).length;
+      const names = Object.keys(users).slice(0, 3).join(', ');
+      return { code, memberCount, onlineCount, names };
+    }).filter(r => r.memberCount > 0);
+
+    if (active.length === 0) {
+      el.innerHTML = '<div class="rooms-loading">No active rooms yet — create one below!</div>';
+      return;
+    }
+    el.innerHTML = active.map(r => `
+      <div class="room-item" onclick="joinRoom('${r.code}')">
+        <div class="room-item-left">
+          <div class="ri-name">🏠 ${r.code}</div>
+          <div class="ri-members">👥 ${r.memberCount} member${r.memberCount !== 1 ? 's' : ''} · ${r.names}${r.memberCount > 3 ? '...' : ''}</div>
+        </div>
+        <div class="room-item-right">
+          <button class="ri-join-btn">Join →</button>
+          ${r.onlineCount > 0 ? `<div class="ri-online">● ${r.onlineCount} online</div>` : ''}
+        </div>
+      </div>`).join('');
+  }, { onlyOnce: true });
+}
+
+window.createRoom = function() {
+  const input = document.getElementById('new-room-name');
+  const name = input.value.trim();
+  if (!name) { input.style.borderColor = '#ef4444'; input.focus(); return; }
+  const code = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').slice(0, 20);
+  joinRoom(code);
+};
+
+window.joinRoom = function(code) {
+  ROOM_CODE = code; window.ROOM_CODE = code;
+  saveLocal('mba_room', code);
+  document.getElementById('setup-screen').style.display = 'none';
+  document.getElementById('user-chip').textContent = '👤 ' + USERNAME;
+  document.getElementById('room-display').textContent = code;
+  myData = loadLocal('mba_tracker', {});
   init();
 };
 
@@ -397,7 +484,7 @@ if(savedName){
 function init(){
   applyTheme(); buildCountdown(); buildPanels(); updateAll(); updateStreak();
   checkReminder(); syncToFirebase(); listenLeaderboard(); listenChat();
-  listenTaunts(); setOnlinePresence();
+  listenpokes(); setOnlinePresence();
 }
 
 // ── FIREBASE SYNC ─────────────────────────────────────────────────────────
@@ -459,8 +546,8 @@ function renderLeaderboard(users){
         <div class="lb-subj-pct">${pct}%</div>
       </div>`;
     }).join('');
-    const tauntBtns=isMe?'<span style="font-size:0.75rem;color:var(--muted)">That\'s you 👋</span>':
-      `<button class="taunt-btn" onclick="sendTaunt('${uname}')">😈 Taunt</button>
+    const pokeBtns=isMe?'<span style="font-size:0.75rem;color:var(--muted)">That\'s you 👋</span>':
+      `<button class="poke-btn" onclick="sendpoke('${uname}')">👉 poke</button>
        <button class="study-together-btn" onclick="sendStudyInvite('${uname}')">🤝 Study Together</button>`;
     return `<div class="lb-card ${rc} ${isMe?'is-me':''}">
       <div class="lb-top">
@@ -480,7 +567,7 @@ function renderLeaderboard(users){
         </div>
       </div>
       <div class="lb-subj-bars">${subjBars}</div>
-      <div class="lb-actions">${tauntBtns}</div>
+      <div class="lb-actions">${pokeBtns}</div>
     </div>`;
   }).join('');
 }
@@ -521,33 +608,33 @@ window.sendChat=function(){
   el.value='';
 };
 
-// ── TAUNTS ────────────────────────────────────────────────────────────────
-function listenTaunts(){
-  onValue(ref(db,`rooms/${ROOM_CODE}/taunts`),snap=>{
-    const taunts=snap.val()||{};
-    const sorted=Object.values(taunts).sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,20);
-    const el=document.getElementById('taunt-list');
-    if(sorted.length===0){el.innerHTML='<div class="no-taunts">No taunts yet. Be the first to start trouble 😏</div>';return;}
+// ── pokeS ────────────────────────────────────────────────────────────────
+function listenpokes(){
+  onValue(ref(db,`rooms/${ROOM_CODE}/pokes`),snap=>{
+    const pokes=snap.val()||{};
+    const sorted=Object.values(pokes).sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,20);
+    const el=document.getElementById('poke-list');
+    if(sorted.length===0){el.innerHTML='<div class="no-pokes">No pokes yet. Be the first to start trouble 😏</div>';return;}
     el.innerHTML=sorted.map(t=>`
-      <div class="taunt-item">
-        <div><div class="taunt-text">${escHtml(t.msg)}</div><div class="taunt-from">from <strong>${t.from}</strong> → <strong>${t.to}</strong></div></div>
-        <div class="taunt-time">${t.ts?new Date(t.ts).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}):''}</div>
+      <div class="poke-item">
+        <div><div class="poke-text">${escHtml(t.msg)}</div><div class="poke-from">from <strong>${t.from}</strong> → <strong>${t.to}</strong></div></div>
+        <div class="poke-time">${t.ts?new Date(t.ts).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}):''}</div>
       </div>`).join('');
   });
 }
 
-window.sendTaunt=function(toUser){
+window.sendpoke=function(toUser){
   const overall=getOverallPct();
   const nextExam=getNextExam();
   const randomSubj=Object.keys(SUBJECTS)[Math.floor(Math.random()*4)];
-  const template=TAUNTS[Math.floor(Math.random()*TAUNTS.length)];
+  const template=pokeS[Math.floor(Math.random()*pokeS.length)];
   const msg=template
     .replace('{n}',myData?Object.values(myData).flatMap(s=>Object.values(s)).filter(t=>t.status==='Done').length:0)
     .replace('{pct}',overall+'%')
     .replace('{days}',nextExam)
     .replace('{subj}',randomSubj);
-  push(ref(db,`rooms/${ROOM_CODE}/taunts`),{from:USERNAME,to:toUser,msg,ts:Date.now()});
-  showToast('😈 Taunt sent to '+toUser+'!');
+  push(ref(db,`rooms/${ROOM_CODE}/pokes`),{from:USERNAME,to:toUser,msg,ts:Date.now()});
+  showToast('👉 poke sent to '+toUser+'!');
 };
 
 window.sendStudyInvite=function(toUser){
@@ -819,7 +906,24 @@ window.showToast=function(msg){
 };
 
 // ── AUTO LOGIN ────────────────────────────────────────────────────────────
-if(savedName){setTimeout(()=>document.getElementById('setup-btn-auto')?.click(),100);}
+if (savedName) {
+  document.getElementById('setup-name').value = savedName;
+  if (savedRoom) {
+    // Both saved — skip setup entirely
+    USERNAME = savedName; ROOM_CODE = savedRoom; window.ROOM_CODE = savedRoom;
+    document.getElementById('setup-screen').style.display = 'none';
+    document.getElementById('user-chip').textContent = '👤 ' + savedName;
+    document.getElementById('room-display').textContent = savedRoom;
+    myData = loadLocal('mba_tracker', {});
+    init();
+  } else {
+    // Name saved but no room — skip to step 2
+    USERNAME = savedName;
+    document.getElementById('step-1').classList.remove('active');
+    document.getElementById('step-2').classList.add('active');
+    loadRooms();
+  }
+}
 </script>
 </body>
 </html>
